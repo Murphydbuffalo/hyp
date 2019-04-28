@@ -34,8 +34,9 @@ module Hyp
       )
 
       ActiveRecord::Base.transaction do
-        @experiment.save
-        @experiment.alternatives.create(alternatives_params)
+        if @experiment.save
+          @experiment.alternatives.create(alternatives_params)
+        end
       end
 
       if @experiment.valid?
