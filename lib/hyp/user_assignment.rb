@@ -1,6 +1,6 @@
 require 'digest'
 
-module Experiments
+module Hyp
   class UserAssignment
     def initialize(identifier:, alternatives:)
       @identifier   = identifier.to_s

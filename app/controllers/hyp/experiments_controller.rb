@@ -46,7 +46,6 @@ module Hyp
       end
     end
 
-    # Record trials and conversions IF the alternative isn't finished
     def update
       if @experiment.update(experiment_params)
         redirect_to @experiment, notice: 'Experiment was successfully updated.'
