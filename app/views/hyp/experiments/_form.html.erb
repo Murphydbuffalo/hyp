@@ -1,0 +1,42 @@
+<%= form_with(model: experiment, local: true) do |form| %>
+  <% if experiment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
+
+      <ul>
+      <% experiment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :alpha %>
+    <%= form.select :alpha, [0.05, 0.01] %>
+  </div>
+
+  <div class="field">
+    <%= form.label :power %>
+    <%= form.select :power, [0.80, 0.90] %>
+  </div>
+
+  <div class="field">
+    <%= form.label :control %>
+    <%= form.text_field :control %>
+  </div>
+
+  <div class="field">
+    <%= form.label :minimum_detectable_effect %>
+    <%= form.text_field :minimum_detectable_effect %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

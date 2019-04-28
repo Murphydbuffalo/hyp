@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @experiment.name %>
+</p>
+
+<p>
+  <strong>Alpha:</strong>
+  <%= @experiment.alpha %>
+</p>
+
+<p>
+  <strong>Power:</strong>
+  <%= @experiment.power %>
+</p>
+
+<p>
+  <strong>Control:</strong>
+  <%= @experiment.control %>
+</p>
+
+<p>
+  <strong>Minimum detectable effect:</strong>
+  <%= @experiment.minimum_detectable_effect %>
+</p>
+
+<p>
+  <strong>Sample size:</strong>
+  <%= @experiment.sample_size %>
+</p>
+
+<%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+<%= link_to 'Back', experiments_path %>
