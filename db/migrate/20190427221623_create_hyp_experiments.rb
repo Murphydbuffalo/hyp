@@ -10,5 +10,7 @@ class CreateHypExperiments < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
+
+    add_index :hyp_experiments, :name, :unique => true
   end
 end

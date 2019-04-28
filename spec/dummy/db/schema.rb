@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_04_27_221658) do
     t.integer "sample_size", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_hyp_experiments_on_name", unique: true
   end
 
   add_foreign_key "hyp_alternatives", "hyp_experiments"
