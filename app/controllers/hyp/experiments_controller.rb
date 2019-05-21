@@ -24,7 +24,6 @@ module Hyp
     end
 
     def create
-      # TODO: Extract this into a service so we can be database-agnostic
       @experiment = Experiment.new(experiment_params)
       @experiment.sample_size = Hyp::Statistics::SampleSize.new(
         alpha:                     @experiment.alpha,
@@ -61,27 +60,27 @@ module Hyp
 
     private
 
-    def set_experiment
-      @experiment = Experiment.find(params[:id])
-    end
+      def set_experiment
+        @experiment = Experiment.find_by(name: params[:name])
+      end
 
-    def experiment_params
-      params.require(:experiment).permit(:name,
-                                         :alpha,
-                                         :power,
-                                         :control,
-                                         :minimum_detectable_effect)
-    end
+      def experiment_params
+        params.require(:experiment).permit(:name,
+                                           :alpha,
+                                           :power,
+                                           :control,
+                                           :minimum_detectable_effect)
+      end
 
-    def alternatives_params
-      [
-        {
-          name: 'Control'
-        },
-        {
-          name: 'Treatment'
-        }
-      ]
-    end
+      def alternatives_params
+        [
+          {
+            name: 'Control'
+          },
+          {
+            name: 'Treatment'
+          }
+        ]
+      end
   end
 end

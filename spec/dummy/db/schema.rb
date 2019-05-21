@@ -10,19 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_27_221658) do
+ActiveRecord::Schema.define(version: 2019_05_21_161143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "hyp_alternatives", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "trials", default: 0, null: false
-    t.integer "conversions", default: 0, null: false
     t.bigint "hyp_experiment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["hyp_experiment_id"], name: "index_hyp_alternatives_on_hyp_experiment_id"
+  end
+
+  create_table "hyp_experiment_user_trials", force: :cascade do |t|
+    t.bigint "hyp_experiment_id"
+    t.bigint "hyp_alternative_id"
+    t.bigint "user_id", null: false
+    t.boolean "converted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hyp_alternative_id"], name: "index_hyp_experiment_user_trials_on_hyp_alternative_id"
+    t.index ["hyp_experiment_id", "user_id"], name: "uniq_experiment_user_trials_idx", unique: true
+    t.index ["hyp_experiment_id"], name: "index_hyp_experiment_user_trials_on_hyp_experiment_id"
   end
 
   create_table "hyp_experiments", force: :cascade do |t|
@@ -38,4 +48,6 @@ ActiveRecord::Schema.define(version: 2019_04_27_221658) do
   end
 
   add_foreign_key "hyp_alternatives", "hyp_experiments"
+  add_foreign_key "hyp_experiment_user_trials", "hyp_alternatives"
+  add_foreign_key "hyp_experiment_user_trials", "hyp_experiments"
 end
