@@ -36,7 +36,7 @@ module Hyp
 
     def record_conversion(user)
       trial = trial_for(user)
-      trial.update!(converted: true) if num_trials(trial.alternative) < sample_size
+      trial.update!(converted: true)
     end
 
     def record_trial_and_conversion(user)
