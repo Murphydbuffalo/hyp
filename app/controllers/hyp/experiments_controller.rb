@@ -1,6 +1,6 @@
 require_dependency "hyp/application_controller"
 
-require 'hyp/statistics/sample_size'
+require 'hyp/services/experiment_creation'
 
 module Hyp
   class ExperimentsController < ApplicationController
@@ -24,19 +24,7 @@ module Hyp
     end
 
     def create
-      @experiment = Experiment.new(experiment_params)
-      @experiment.sample_size = Hyp::Statistics::SampleSize.new(
-        alpha:                     @experiment.alpha,
-        power:                     @experiment.power,
-        control:                   @experiment.control,
-        minimum_detectable_effect: @experiment.minimum_detectable_effect
-      )
-
-      ActiveRecord::Base.transaction do
-        if @experiment.save
-          @experiment.alternatives.create(alternatives_params)
-        end
-      end
+      @experiment = Hyp::Services::ExperimentCreation.new(experiment_params).run
 
       if @experiment.valid?
         redirect_to @experiment, notice: 'Experiment was successfully created.'
@@ -61,7 +49,7 @@ module Hyp
     private
 
       def set_experiment
-        @experiment = Experiment.find_by(name: params[:name])
+        @experiment = Experiment.find(params[:id])
       end
 
       def experiment_params
@@ -70,17 +58,6 @@ module Hyp
                                            :power,
                                            :control,
                                            :minimum_detectable_effect)
-      end
-
-      def alternatives_params
-        [
-          {
-            name: 'Control'
-          },
-          {
-            name: 'Treatment'
-          }
-        ]
       end
   end
 end
