@@ -14,7 +14,7 @@ module Hyp
     private
 
     def int
-      @int ||= Digest::SHA256.hexdigest(user.id.to_s).to_i
+      @int ||= Digest::SHA256.hexdigest(user.id.to_s).to_i(16)
     end
 
     attr_reader :user, :alternatives
