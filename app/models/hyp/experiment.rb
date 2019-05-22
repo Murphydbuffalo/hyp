@@ -35,8 +35,7 @@ module Hyp
     end
 
     def record_conversion(user)
-      trial = trial_for(user)
-      trial.update!(converted: true)
+      trial_for(user)&.update!(converted: true)
     end
 
     def record_trial_and_conversion(user)
