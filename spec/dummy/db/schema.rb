@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 2019_05_21_161143) do
     t.float "power", default: 0.8, null: false
     t.float "control", null: false
     t.float "minimum_detectable_effect", null: false
-    t.integer "sample_size", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_hyp_experiments_on_name", unique: true

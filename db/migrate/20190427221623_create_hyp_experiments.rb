@@ -6,7 +6,6 @@ class CreateHypExperiments < ActiveRecord::Migration[5.2]
       t.float :power, null: false, default: 0.80
       t.float :control, null: false
       t.float :minimum_detectable_effect, null: false
-      t.integer :sample_size, null: false
 
       t.timestamps
     end

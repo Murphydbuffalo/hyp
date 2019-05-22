@@ -1,4 +1,5 @@
 require 'hyp/user_assignment'
+require 'hyp/statistics/sample_size'
 
 module Hyp
   class Experiment < ApplicationRecord
@@ -12,6 +13,15 @@ module Hyp
     validates :minimum_detectable_effect, numericality:
       { less_than_or_equal_to: 1.0, greater_than_or_equal_to: 0.0 }
     validates_uniqueness_of :name
+
+    def sample_size
+      @sample_size ||= Hyp::Statistics::SampleSize.new(
+        alpha:                     alpha,
+        power:                     power,
+        control:                   control,
+        minimum_detectable_effect: minimum_detectable_effect
+      ).to_i
+    end
 
     def finished?
       alternatives.all? do |alternative|
