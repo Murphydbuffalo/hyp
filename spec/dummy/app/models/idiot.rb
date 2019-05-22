@@ -1,0 +1,2 @@
+class Idiot < ApplicationRecord
+end

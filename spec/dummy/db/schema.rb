@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_21_161143) do
+ActiveRecord::Schema.define(version: 2019_05_22_163252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,12 +26,12 @@ ActiveRecord::Schema.define(version: 2019_05_21_161143) do
   create_table "hyp_experiment_user_trials", force: :cascade do |t|
     t.bigint "hyp_experiment_id"
     t.bigint "hyp_alternative_id"
-    t.bigint "user_id", null: false
     t.boolean "converted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "idiot_id"
     t.index ["hyp_alternative_id"], name: "index_hyp_experiment_user_trials_on_hyp_alternative_id"
-    t.index ["hyp_experiment_id", "user_id"], name: "uniq_experiment_user_trials_idx", unique: true
+    t.index ["hyp_experiment_id", "idiot_id"], name: "uniq_experiment_user_trials_idx", unique: true
     t.index ["hyp_experiment_id"], name: "index_hyp_experiment_user_trials_on_hyp_experiment_id"
   end
 
@@ -46,7 +46,15 @@ ActiveRecord::Schema.define(version: 2019_05_21_161143) do
     t.index ["name"], name: "index_hyp_experiments_on_name", unique: true
   end
 
+  create_table "idiots", force: :cascade do |t|
+    t.string "name"
+    t.integer "age"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "hyp_alternatives", "hyp_experiments"
   add_foreign_key "hyp_experiment_user_trials", "hyp_alternatives"
   add_foreign_key "hyp_experiment_user_trials", "hyp_experiments"
+  add_foreign_key "hyp_experiment_user_trials", "idiots"
 end
