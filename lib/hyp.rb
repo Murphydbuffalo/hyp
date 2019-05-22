@@ -1,7 +1,8 @@
 require "hyp/engine"
 
 module Hyp
-  mattr_writer :db_interface, :user_class_name
+  mattr_writer   :db_interface, :user_class_name
+  mattr_accessor :authorize_with
 
   def self.db_interface
     if @@db_interface.in?(%i[active_record mongoid])

@@ -1,9 +1,12 @@
-require_dependency "hyp/application_controller"
-
 require 'hyp/services/experiment_creation'
 
 module Hyp
-  class ExperimentsController < ApplicationController
+  # We do not call `require_dependency 'hyp/application_controller'`
+  # because we want to inherit from the mounting application's
+  # `ApplicationController`. This allows us to leverage whatever authorization
+  # method they've specified in `Hyp.authorize_with`.
+  class ExperimentsController < ::ApplicationController
+    before_action :authorize
     before_action :set_experiment, only: [:show, :edit, :update, :destroy]
 
     def index
@@ -58,6 +61,20 @@ module Hyp
                                            :power,
                                            :control,
                                            :minimum_detectable_effect)
+      end
+
+      def authorize
+        return if authorized?
+
+        redirect_back(
+          fallback_location: main_app.root_path,
+          notice: 'Forbidden'
+        )
+      end
+
+      def authorized?
+        return true unless respond_to?(Hyp.authorize_with.to_s)
+        send(Hyp.authorize_with)
       end
   end
 end
