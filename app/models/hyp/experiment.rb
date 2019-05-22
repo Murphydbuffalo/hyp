@@ -15,7 +15,7 @@ module Hyp
     validates_uniqueness_of :name
 
     def sample_size
-      @sample_size ||= Hyp::Statistics::SampleSize.new(
+      @sample_size ||= Statistics::SampleSize.new(
         alpha:                     alpha,
         power:                     power,
         control:                   control,
