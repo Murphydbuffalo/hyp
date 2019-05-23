@@ -1,12 +1,9 @@
-require 'hyp/services/experiment_creation'
+require_dependency "hyp/application_controller"
+require 'hyp/experiment_repo'
 
 module Hyp
-  # We do not call `require_dependency 'hyp/application_controller'`
-  # because we want to inherit from the mounting application's
-  # `ApplicationController`. This allows us to leverage whatever authorization
-  # method they've specified in `Hyp.authorize_with`.
-  class ExperimentsController < ::ApplicationController
-    before_action :authorize
+  class ExperimentsController < ApplicationController
+    before_action :http_basic_authenticate, if: -> { Rails.env.production? }
     before_action :set_experiment, only: [:show, :edit, :update, :destroy]
 
     def index
@@ -63,18 +60,8 @@ module Hyp
                                            :minimum_detectable_effect)
       end
 
-      def authorize
-        return if authorized?
-
-        redirect_back(
-          fallback_location: main_app.root_path,
-          notice: 'Forbidden'
-        )
-      end
-
-      def authorized?
-        return true unless respond_to?(Hyp.authorize_with.to_s)
-        send(Hyp.authorize_with)
+      def http_basic_authenticate
+        http_basic_authenticate_with name: ENV['HYP_USERNAME'], password: ENV['HYP_PASSWORD']
       end
   end
 end
