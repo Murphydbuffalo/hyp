@@ -18,6 +18,10 @@ module Hyp
     @@user_class_name.nil? ? 'User' : @@user_class_name
   end
 
+  def self.user_class
+    user_class_name.constantize
+  end
+
   def self.user_foreign_key_name
     "#{user_class_name.downcase}_id".to_sym
   end

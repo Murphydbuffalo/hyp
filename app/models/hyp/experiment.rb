@@ -27,8 +27,8 @@ module Hyp
 
       private
 
-      # Override definition in `ExperimentMethods` to use Mongoid's `desc`
-      # instead of ActiveRecord's `order`
+      # Override definition in `ExperimentHelpers::Methods` to use Mongoid's
+      # `desc` instead of ActiveRecord's `order`
       def alternative_for(user)
         assigner = UserAssignment.new(user: user, alternatives: alternatives)
         alternatives.desc(:id)[assigner.index]
