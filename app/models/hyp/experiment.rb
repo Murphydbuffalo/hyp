@@ -1,69 +1,38 @@
-require 'hyp/user_assignment'
-require 'hyp/statistics/sample_size'
-
 module Hyp
-  class Experiment < ApplicationRecord
-    has_many  :alternatives, foreign_key: 'hyp_experiment_id', dependent: :destroy
-    has_many  :experiment_user_trials, foreign_key: 'hyp_experiment_id', dependent: :destroy
+  if Hyp.db_interface == :active_record
+    class Experiment < ApplicationRecord
+      include Hyp::ExperimentHelpers::Methods
+      extend  Hyp::ExperimentHelpers::Validations
 
-    validates :alpha, inclusion: { in: [0.05, 0.01] }
-    validates :power, inclusion: { in: [0.80, 0.90] }
-    validates :control, numericality:
-      { less_than_or_equal_to: 1.0, greater_than_or_equal_to: 0.0 }
-    validates :minimum_detectable_effect, numericality:
-      { less_than_or_equal_to: 1.0, greater_than_or_equal_to: 0.0 }
-    validates_uniqueness_of :name
-
-    def sample_size
-      @sample_size ||= Statistics::SampleSize.new(
-        alpha:                     alpha,
-        power:                     power,
-        control:                   control,
-        minimum_detectable_effect: minimum_detectable_effect
-      ).to_i
+      has_many  :alternatives, foreign_key: 'hyp_experiment_id', dependent: :destroy
+      has_many  :experiment_user_trials, foreign_key: 'hyp_experiment_id', dependent: :destroy
     end
+  elsif Hyp.db_interface == :mongoid
+    class Experiment
+      include Mongoid::Document
+      include Mongoid::Timestamps
+      include Hyp::ExperimentHelpers::Methods
+      extend  Hyp::ExperimentHelpers::Validations
 
-    def finished?
-      alternatives.all? do |alternative|
-        num_trials(alternative) >= sample_size
+      has_many  :alternatives, class_name: 'Hyp::Alternative', foreign_key: 'hyp_experiment_id', dependent: :destroy
+      has_many  :experiment_user_trials, class_name: 'Hyp::ExperimentUserTrial', foreign_key: 'hyp_experiment_id', dependent: :destroy
+
+      field :name,                      type: String
+      field :alpha,                     type: Float, default: 0.05
+      field :power,                     type: Float, default: 0.80
+      field :control,                   type: Float
+      field :minimum_detectable_effect, type: Float
+
+      index({ name: 1 }, { unique: true })
+
+      private
+
+      # Override definition in `ExperimentMethods` to use Mongoid's `desc`
+      # instead of ActiveRecord's `order`
+      def alternative_for(user)
+        assigner = UserAssignment.new(user: user, alternatives: alternatives)
+        alternatives.desc(:id)[assigner.index]
       end
-    end
-
-    def record_trial(user)
-      alternative = alternative_for(user)
-      find_or_create_trial(alternative, user) if num_trials(alternative) < sample_size
-    end
-
-    def record_conversion(user)
-      trial_for(user)&.update!(converted: true)
-    end
-
-    def record_trial_and_conversion(user)
-      record_trial(user)
-      record_conversion(user)
-    end
-
-    private
-
-    def alternative_for(user)
-      assigner = UserAssignment.new(user: user, alternatives: alternatives)
-      alternatives.order(:id)[assigner.index]
-    end
-
-    def trial_for(user)
-      ExperimentUserTrial.find_by(experiment: self, user: user)
-    end
-
-    def num_trials(alternative)
-      ExperimentUserTrial.where(alternative: alternative).count
-    end
-
-    def find_or_create_trial(alternative, user)
-      ExperimentUserTrial.find_or_initialize_by(
-        experiment:  self,
-        alternative: alternative,
-        user:        user
-      ).save!
     end
   end
 end

@@ -26,11 +26,11 @@ idiots = Idiot.create!([
   {name: 'Armando', age: 55}
 ])
 
-exp = Hyp::Services::ExperimentCreation.new(
+exp = Hyp::ExperimentRepo.create(
   name: 'Sign Up CTA Copy',
   control: 0.02,
   minimum_detectable_effect: 0.99
-).run
+)
 
 idiots.each do |idiot|
   exp.record_trial_and_conversion(idiot)

@@ -24,7 +24,7 @@ module Hyp
     end
 
     def create
-      @experiment = Hyp::Services::ExperimentCreation.new(experiment_params).run
+      @experiment = ExperimentRepo.create(experiment_params)
 
       if @experiment.valid?
         redirect_to @experiment, notice: 'Experiment was successfully created.'
