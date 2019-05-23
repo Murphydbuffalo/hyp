@@ -2,21 +2,25 @@ require 'digest'
 
 module Hyp
   class UserAssignment
-    def initialize(user:, alternatives:)
-      @user         = user
-      @alternatives = alternatives
+    def initialize(user:, experiment:)
+      @user       = user
+      @experiment = experiment
     end
 
-    def index
-      int % alternatives.length
+    def alternative_index
+      user_experiment_hash.to_i(16) % num_alternatives
     end
 
     private
 
-    def int
-      @int ||= Digest::SHA256.hexdigest(user.id.to_s).to_i(16)
+    attr_reader :user, :experiment
+
+    def user_experiment_hash
+      @user_experiment_hash ||= Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
     end
 
-    attr_reader :user, :alternatives
+    def num_alternatives
+      experiment.alternatives.count
+    end
   end
 end

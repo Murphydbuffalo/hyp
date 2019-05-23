@@ -36,8 +36,11 @@ module Hyp
       private
 
         def alternative_for(user)
-          assigner = UserAssignment.new(user: user, alternatives: alternatives)
-          alternatives.order(:id)[assigner.index]
+          alternatives.order(:id)[user_assigner.alternative_index]
+        end
+
+        def user_assigner
+          UserAssignment.new(user: user, experiment: self)
         end
 
         def num_trials(alternative)
