@@ -19,6 +19,10 @@ module Hyp
         end
       end
 
+      def alternative_name(user)
+        alternative_for(user).name
+      end
+
       def record_trial(user)
         alternative = alternative_for(user)
         find_or_create_trial(alternative, user) if num_trials(alternative) < sample_size
