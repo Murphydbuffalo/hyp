@@ -10,7 +10,7 @@ module Hyp
       limit  = params[:limit]  || 25
       offset = params[:offset] || 0
 
-      @experiments = Experiment.offset(offset).limit(limit).includes(:alternatives)
+      @experiments = ExperimentRepo.list
     end
 
     def show
@@ -49,7 +49,7 @@ module Hyp
     private
 
       def set_experiment
-        @experiment = Experiment.find(params[:id])
+        @experiment = ExperimentRepo.find(params[:id])
       end
 
       def experiment_params

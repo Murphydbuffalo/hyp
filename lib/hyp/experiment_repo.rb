@@ -1,8 +1,16 @@
 module Hyp
   class ExperimentRepo
     class << self
+      def list(offset: 0, limit: 25)
+        Hyp::Experiment.offset(offset).limit(limit).includes(:alternatives)
+      end
+
+      def find(id)
+        Hyp::Experiment.includes(:alternatives).find(id)
+      end
+
       def find_by(query)
-        send("#{Hyp.db_interface}_find_by", query)
+        Hyp::Experiment.includes(:alternatives).where(query).first
       end
 
       def create(params)
@@ -10,14 +18,6 @@ module Hyp
       end
 
       private
-
-      def active_record_find_by(query)
-        Hyp::Experiment.find_by(query)
-      end
-
-      def mongoid_find_by(query)
-        Hyp::Experiment.where(query).first
-      end
 
       def active_record_create(params)
         experiment = Hyp::Experiment.new(params)
