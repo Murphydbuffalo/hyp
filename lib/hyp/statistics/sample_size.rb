@@ -12,6 +12,8 @@ module Hyp
         @minimum_detectable_effect = minimum_detectable_effect
       end
 
+      # From "Sample Size Determination" by Ralph B. Dell, Steve Holleran, and
+      # Rajasekhar Ramakrishnan - ILAR Journal Volume 43, Number 4 2002
       def to_i
         @to_i ||= (
           (
@@ -38,7 +40,6 @@ module Hyp
           elsif alpha == 0.01 && power == 0.90
             14.88
           else
-            # TODO: get a more robust function here
             raise ArgumentError, 'Invalid alpha or power. Allowed values of alpha are 0.05 or 0.01, and allowed values of power are 0.8 or 0.9'
           end
       end
