@@ -5,6 +5,7 @@ module Hyp
   class ExperimentsController < ApplicationController
     before_action :http_basic_authenticate, if: -> { Rails.env.production? }
     before_action :set_experiment, only: [:show, :edit, :update, :destroy]
+    before_action :redirect_to_experiment_show_if_experiment_started, only: [:edit, :update]
 
     def index
       limit  = params[:limit]  || 25
@@ -62,6 +63,15 @@ module Hyp
 
       def http_basic_authenticate
         http_basic_authenticate_with name: ENV['HYP_USERNAME'], password: ENV['HYP_PASSWORD']
+      end
+
+      def redirect_to_experiment_show_if_experiment_started
+        if @experiment.started?
+          redirect_to(
+            @experiment,
+            notice: 'Cannot modify an experiment that has already started'
+          )
+        end
       end
   end
 end

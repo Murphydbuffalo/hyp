@@ -13,6 +13,10 @@ module Hyp
         ).to_i
       end
 
+      def started?
+        ExperimentUserTrial.where(experiment: self).exists?
+      end
+
       def finished?
         alternatives.all? do |alternative|
           num_trials(alternative) >= sample_size

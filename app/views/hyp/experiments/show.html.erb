@@ -30,5 +30,8 @@
   <%= @experiment.sample_size %>
 </p>
 
-<%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+<% unless @experiment.started? %>
+  <%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+<% end %>
+
 <%= link_to 'Back', experiments_path %>
