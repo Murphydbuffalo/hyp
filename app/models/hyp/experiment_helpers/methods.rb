@@ -23,6 +23,38 @@ module Hyp
         end
       end
 
+      def approximate_percent_finshed
+        num_trials(alternatives.first) / sample_size
+      end
+
+      def control_conversion_rate
+        control_number_of_trials = num_trials(control_alternative)
+
+        if control_number_of_trials.zero?
+          0.0
+        else
+          control_trials.where(converted: true).count / control_number_of_trials.to_f
+        end
+      end
+
+      def treatment_conversion_rate
+        treatment_number_of_trials = num_trials(treatment_alternative)
+
+        if treatment_number_of_trials.zero?
+          0.0
+        else
+          treatment_trials.where(converted: true).count / treatment_number_of_trials.to_f
+        end
+      end
+
+      def effect_size
+        hypothesis_test.effect_size.abs
+      end
+
+      def significant_result_found?
+        hypothesis_test.result == :reject_null
+      end
+
       def alternative_name(user)
         alternative_for(user).name
       end
@@ -43,6 +75,15 @@ module Hyp
 
       private
 
+        def hypothesis_test
+          @hypothesis_test ||= Hyp::Statistics::HypothesisTest.new(
+            control:     control_conversion_rate,
+            treatment:   treatment_conversion_rate,
+            sample_size: sample_size,
+            alpha:       alpha
+          )
+        end
+
         def alternative_for(user)
           user_assigner = UserAssignment.new(user: user, experiment: self)
           alternatives.order(:id)[user_assigner.alternative_index]
@@ -62,6 +103,28 @@ module Hyp
             alternative: alternative,
             user:        user
           ).save!
+        end
+
+        def control_trials
+          ExperimentUserTrial.where(
+            experiment: self,
+            alternative: control_alternative
+          )
+        end
+
+        def treatment_trials
+          ExperimentUserTrial.where(
+            experiment: self,
+            alternative: treatment_alternative
+          )
+        end
+
+        def control_alternative
+          alternatives.where(name: 'control').first
+        end
+
+        def treatment_alternative
+          alternatives.where(name: 'treatment').first
         end
     end
   end

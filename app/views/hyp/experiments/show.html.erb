@@ -1,37 +1,69 @@
-<p id="notice"><%= notice %></p>
+<div class='experiment-status'>
+  <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
+  <h1>
   <%= @experiment.name %>
-</p>
+  </h1>
 
-<p>
-  <strong>Alpha:</strong>
-  <%= @experiment.alpha %>
-</p>
+  <p>
+    <strong>Alpha:</strong> <%= @experiment.alpha %>
+  </p>
 
-<p>
-  <strong>Power:</strong>
-  <%= @experiment.power %>
-</p>
+  <p>
+    <strong>Power:</strong> <%= @experiment.power %>
+  </p>
 
-<p>
-  <strong>Control:</strong>
-  <%= @experiment.control %>
-</p>
+  <p>
+    <strong>Control:</strong> <%= @experiment.control %>
+  </p>
 
-<p>
-  <strong>Minimum detectable effect:</strong>
-  <%= @experiment.minimum_detectable_effect %>
-</p>
+  <p>
+    <strong>Minimum detectable effect:</strong> <%= @experiment.minimum_detectable_effect %>
+  </p>
 
-<p>
-  <strong>Sample size:</strong>
-  <%= @experiment.sample_size %>
-</p>
+  <p>
+    <strong>Sample size:</strong> <%= @experiment.sample_size %>
+  </p>
+</div>
 
-<% unless @experiment.started? %>
-  <%= link_to 'Edit', edit_experiment_path(@experiment) %> |
-<% end %>
+<hr/>
 
-<%= link_to 'Back', experiments_path %>
+<div class='experiment-status'>
+  <h2>Experiment Progress</h2>
+
+  <div class='progress-bar'>
+    <div class='progress-bar-fill' style="width:<%= @experiment.approximate_percent_finshed %>%"></div>
+  </div>
+
+  <% if @experiment.finished? %>
+    <h3>
+      The experiment is finished!
+    </h3>
+
+    <% if @experiment.significant_result_found? %>
+      <strong>
+        <%= "#{@experiment.winner.name} is #{@experiment.effect_size}% more effective than #{@experiment.loser.name}"%>
+      </strong>
+    <% else %>
+      <strong>No significant difference was found between the two alternatives.</strong>
+    <% end %>
+  <% else %>
+    <h3>
+      <%= "The experiment is #{@experiment.approximate_percent_finshed}% complete. No statistically significant conculsions can be made until it is complete." %>
+    </h3>
+  <% end %>
+
+  <p>
+    <strong>Control Conversion Rate:</strong> <%= "#{@experiment.control_conversion_rate}%" %>
+  </p>
+
+  <p>
+    <strong>Treatment Conversion Rate:</strong> <%= "#{@experiment.treatment_conversion_rate}%" %>
+  </p>
+
+  <% unless @experiment.started? %>
+    <%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+  <% end %>
+
+  <%= link_to 'Back', experiments_path %>
+</div>
