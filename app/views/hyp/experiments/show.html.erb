@@ -71,11 +71,13 @@
     </a>
   </h5>
 
-  <h5> | </h5>
+  <% unless @experiment.started? %>
+    <h5> | </h5>
 
-  <h5>
-    <a href=<%= edit_experiment_path(@experiment) %>>
-      Edit
-    </a>
-  </h5>
+    <h5>
+      <a href=<%= edit_experiment_path(@experiment) %>>
+        Edit
+      </a>
+    </h5>
+  <% end %>
 </nav>
