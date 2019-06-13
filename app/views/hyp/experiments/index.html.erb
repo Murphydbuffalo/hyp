@@ -1,39 +1,47 @@
-<p id="notice"><%= notice %></p>
+<header>
+  <div id="modal">
+    <p id="notice"><%= notice %></p>
 
-<h1>Experiments</h1>
+    <h1>Experiments</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Alpha</th>
-      <th>Power</th>
-      <th>Control</th>
-      <th>Minimum detectable effect</th>
-      <th>Sample size</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Alpha</th>
+          <th>Power</th>
+          <th>Control</th>
+          <th>Minimum detectable effect</th>
+          <th>Sample size</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
 
-  <tbody>
-    <% @experiments.each do |experiment| %>
-      <tr>
-        <td><%= experiment.name %></td>
-        <td><%= experiment.alpha %></td>
-        <td><%= experiment.power %></td>
-        <td><%= experiment.control %></td>
-        <td><%= experiment.minimum_detectable_effect %></td>
-        <td><%= experiment.sample_size %></td>
-        <td><%= link_to 'Show', experiment %></td>
-        <% unless experiment.started? %>
-          <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+      <tbody>
+        <% @experiments.each do |experiment| %>
+          <tr>
+            <td><%= experiment.name %></td>
+            <td><%= experiment.alpha %></td>
+            <td><%= experiment.power %></td>
+            <td><%= experiment.control %></td>
+            <td><%= experiment.minimum_detectable_effect %></td>
+            <td><%= experiment.sample_size %></td>
+            <td><%= link_to 'Details', experiment %></td>
+            <% unless experiment.started? %>
+              <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+            <% end %>
+            <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
         <% end %>
-        <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</header>
 
-<br>
-
-<%= link_to 'New Experiment', new_experiment_path %>
+<nav>
+  <h5>
+    <a href=<%= new_experiment_path %>>
+      New Experiment
+    </a>
+  </h5>
+</nav>

@@ -1,6 +1,22 @@
-<h1>Editing Experiment</h1>
+<header>
+  <div id="modal">
+    <h1>Editing Experiment</h1>
+    <%= render 'form', experiment: @experiment %>
+  </div>
+</header>
 
-<%= render 'form', experiment: @experiment %>
+<nav>
+  <h5>
+    <a href=<%= experiment_path(@experiment) %>>
+      Details
+    </a>
+  </h5>
 
-<%= link_to 'Show', @experiment %> |
-<%= link_to 'Back', experiments_path %>
+  <h5> | </h5>
+
+  <h5>
+    <a href=<%= experiments_path %>>
+      Back
+    </a>
+  </h5>
+</nav>
