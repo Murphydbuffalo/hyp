@@ -1,4 +1,5 @@
 require 'hyp/statistics/sample_size'
+require 'hyp/statistics/hypothesis_test'
 require 'hyp/user_assignment'
 
 module Hyp
@@ -14,36 +15,48 @@ module Hyp
       end
 
       def started?
-        ExperimentUserTrial.where(experiment: self).exists?
+        if @started.nil?
+          ExperimentUserTrial.where(experiment: self).exists?
+        else
+          @started
+        end
       end
 
       def finished?
-        alternatives.all? do |alternative|
-          num_trials(alternative) >= sample_size
+        if @finished.nil?
+          alternatives.all? do |alternative|
+            num_trials(alternative) >= sample_size
+          end
+        else
+          @finished
         end
       end
 
       def approximate_percent_finshed
-        num_trials(alternatives.first) / sample_size
+        @approximate_percent_finshed ||= num_trials(alternatives.first) / sample_size
       end
 
       def control_conversion_rate
-        control_number_of_trials = num_trials(control_alternative)
+        @control_conversion_rate ||= begin
+          control_number_of_trials = num_trials(control_alternative)
 
-        if control_number_of_trials.zero?
-          0.0
-        else
-          control_trials.where(converted: true).count / control_number_of_trials.to_f
+          if control_number_of_trials.zero?
+            0.0
+          else
+            control_trials.where(converted: true).count / control_number_of_trials.to_f
+          end
         end
       end
 
       def treatment_conversion_rate
-        treatment_number_of_trials = num_trials(treatment_alternative)
+        @treatment_conversion_rate ||= begin
+          treatment_number_of_trials = num_trials(treatment_alternative)
 
-        if treatment_number_of_trials.zero?
-          0.0
-        else
-          treatment_trials.where(converted: true).count / treatment_number_of_trials.to_f
+          if treatment_number_of_trials.zero?
+            0.0
+          else
+            treatment_trials.where(converted: true).count / treatment_number_of_trials.to_f
+          end
         end
       end
 
@@ -119,12 +132,13 @@ module Hyp
           )
         end
 
+        # TODO: probably want booleans or enums here rather than string names
         def control_alternative
-          alternatives.where(name: 'control').first
+          alternatives.where(name: 'Control').first
         end
 
         def treatment_alternative
-          alternatives.where(name: 'treatment').first
+          alternatives.where(name: 'Treatment').first
         end
     end
   end

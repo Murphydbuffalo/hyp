@@ -33,7 +33,8 @@ module Hyp
       end
 
       def test_statistic
-        @test_statistic ||= effect_size / standard_deviation
+        return 0.0 if standard_deviation == 0.0
+        effect_size / standard_deviation
       end
 
       def effect_size

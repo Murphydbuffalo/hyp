@@ -1,0 +1,74 @@
+html { height: 100%; }
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #e8ebed;
+  color: #48545b;
+  font-size: 14px;
+  font-family: "Open Sans", "Arial", "Helvetica Neue", Helvetica, sans-serif;
+  line-height: 1.4em;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color:           #3384CC;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin:      0;
+  padding:     0;
+  line-height: 1.4em;
+  font-family: $heavy-sans;
+  font-weight: 400;
+}
+
+header {
+  background-color: #0a4773;
+  min-height: 500px;
+}
+
+#modal {
+  position: relative;
+  margin: auto;
+  top: 5em;
+  background: white;
+  min-height: 500px;
+  width: 70%;
+  border-radius: 5px;
+  box-shadow: 1px 1px 4px lightgray;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.experiment-parameters p, .conversion-rates p {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.horizontal-flex-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.experiment-status, .conversion-rates {
+  flex: 1;
+  padding: 2em;
+}
+
+.progress-bar {
+  background-color: lightgray;
+  height: 3em;
+  border-radius: 6px;
+  margin: 1em auto;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #035908;
+  border-radius: 6px;
+}
