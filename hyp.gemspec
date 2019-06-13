@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors     = ["Dan Murphy"]
   spec.email       = ["hello@danmurphy.codes"]
   spec.homepage    = "https://hyp.works/"
-  spec.summary     = "Minimal configuration, statistically valid A/B testing."
+  spec.summary     = "Minimal configuration, statistically valid A/B testing for Ruby on Rails."
   spec.description = "Easily run, monitor, and understand A/B tests from your Rails app."
   spec.license     = "MIT"
   spec.post_install_message = "Hyyyyyyyyyyp!"
