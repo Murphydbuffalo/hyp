@@ -64,8 +64,18 @@
   </div>
 </header>
 
-<% unless @experiment.started? %>
-  <%= link_to 'Edit', edit_experiment_path(@experiment) %> |
-<% end %>
+<nav>
+  <h4>
+    <a href=<%= experiments_path %>>
+      Back
+    </a>
+  </h4>
 
-<%= link_to 'Back', experiments_path %>
+  <h4> | </h4>
+
+  <h4>
+    <a href=<%= edit_experiment_path(@experiment) %>>
+      Edit
+    </a>
+  </h4>
+</nav>
