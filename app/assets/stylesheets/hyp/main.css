@@ -43,6 +43,10 @@ header {
   text-align: center;
 }
 
+#modal table {
+  margin: 0 auto;
+}
+
 .experiment-parameters p, .conversion-rates p {
   display: inline-block;
   margin-right: 0.5em;
