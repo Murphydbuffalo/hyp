@@ -1,3 +1,7 @@
+# Beta
+Hyp is in über ultra beta! It is not production ready. We're still working out
+the kinks. Capiche?
+
 # Hyp
 Easily run, monitor, and understand A/B tests from your Rails app.
 
