@@ -2,6 +2,7 @@ require "hyp/engine"
 
 module Hyp
   mattr_writer :db_interface, :user_class_name
+  mattr_accessor :experiment_complete_callback
 
   def self.db_interface
     if @@db_interface.in?(%i[active_record mongoid])
