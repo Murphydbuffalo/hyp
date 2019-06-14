@@ -11,15 +11,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a, a:visited {
+a:visited {
   color: black;
   font-weight: bold;
   text-decoration: none;
-}
-
-a:hover {
-  color: black;
-  text-decoration: underline;
 }
 
 header {
@@ -94,4 +89,9 @@ nav h5 {
   background-color: lightgray;
   color: black;
   font-size: 0.9em;
+}
+
+.sample-size-preview {
+  width: 50%;
+  margin: 0 auto;
 }
