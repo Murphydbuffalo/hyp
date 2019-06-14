@@ -52,8 +52,8 @@ module Hyp
         end
       end
 
-      def approximate_percent_finshed
-        @approximate_percent_finshed ||= num_trials(alternatives.first) / sample_size
+      def approximate_percent_finished
+        @approximate_percent_finished ||= num_trials(alternatives.first) / sample_size
       end
 
       def control_conversion_rate

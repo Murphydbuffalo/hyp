@@ -18,18 +18,18 @@
       <p>
         <strong>Minimum detectable effect:</strong> <%= @experiment.minimum_detectable_effect.round(4) %>
       </p>
-
-      <p>
-        <strong>Required sample size per alternative:</strong> <%= @experiment.sample_size %>
-      </p>
     </section>
 
     <div class='horizontal-flex-wrapper'>
       <section class='experiment-progress'>
         <h3>Experiment Progress</h3>
 
+        <p>
+          <strong>Required sample size per alternative:</strong> <%= @experiment.sample_size %>
+        </p>
+
         <div class='progress-bar'>
-          <div class='progress-bar-fill' style="width:<%= @experiment.approximate_percent_finshed %>%"></div>
+          <div class='progress-bar-fill' style="width:<%= @experiment.approximate_percent_finished %>%"></div>
         </div>
       </section>
 
@@ -56,7 +56,7 @@
             No significant difference was found between the two alternatives.
           <% end %>
         <% else %>
-          <%= "The experiment is roughly #{@experiment.approximate_percent_finshed}% complete. No statistically significant conculsions can be made until it is complete." %>
+          <%= "The experiment is roughly #{@experiment.approximate_percent_finished}% complete. No statistically significant conculsions can be made until it is complete." %>
         <% end %>
       </p>
     </section>
