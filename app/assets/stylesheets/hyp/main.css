@@ -57,7 +57,7 @@ header {
   justify-content: space-evenly;
 }
 
-.experiment-status, .conversion-rates {
+.experiment-progress, .conversion-rates {
   flex: 1;
   padding: 2em;
 }

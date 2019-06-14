@@ -20,25 +20,17 @@
       </p>
 
       <p>
-        <strong>Sample size:</strong> <%= @experiment.sample_size %>
+        <strong>Required sample size:</strong> <%= @experiment.sample_size %>
       </p>
     </section>
 
     <div class='horizontal-flex-wrapper'>
-      <section class='experiment-status'>
+      <section class='experiment-progress'>
         <h3>Experiment Progress</h3>
 
         <div class='progress-bar'>
           <div class='progress-bar-fill' style="width:<%= @experiment.approximate_percent_finshed %>%"></div>
         </div>
-
-        <p class='results'>
-          <% if @experiment.finished? %>
-            The experiment is finished!
-          <% else %>
-            <%= "The experiment is roughly #{@experiment.approximate_percent_finshed}% complete. No statistically significant conculsions can be made until it is complete." %>
-          <% end %>
-        </p>
       </section>
 
       <section class='conversion-rates'>
@@ -51,16 +43,23 @@
         <p>
           <strong>Treatment:</strong> <%= "#{@experiment.treatment_conversion_rate}%" %>
         </p>
-
-        <p>
-          <% if @experiment.finished? && @experiment.significant_result_found? %>
-            <%= "#{@experiment.winner.name} is #{@experiment.effect_size}% more effective than #{@experiment.loser.name}"%>
-          <% else %>
-            No significant difference has found between the two alternatives.
-          <% end %>
-        </p>
       </section>
     </div>
+
+    <section class='results'>
+      <p>
+        <% if @experiment.finished? %>
+          The experiment is finished!
+          <% if @experiment.significant_result_found? %>
+            <%= "#{@experiment.winner.name} is #{@experiment.effect_size}% more effective than #{@experiment.loser.name}"%>
+          <% else %>
+            No significant difference was found between the two alternatives.
+          <% end %>
+        <% else %>
+          <%= "The experiment is roughly #{@experiment.approximate_percent_finshed}% complete. No statistically significant conculsions can be made until it is complete." %>
+        <% end %>
+      </p>
+    </section>
   </div>
 </header>
 

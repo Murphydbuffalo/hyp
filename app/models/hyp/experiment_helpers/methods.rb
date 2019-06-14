@@ -32,6 +32,26 @@ module Hyp
         end
       end
 
+      def winner
+        return nil unless finished?
+
+        if control_conversion_rate >= treatment_conversion_rate
+          control_alternative
+        else
+          treatment_alternative
+        end
+      end
+
+      def loser
+        return nil unless finished?
+
+        if control_conversion_rate < treatment_conversion_rate
+          control_alternative
+        else
+          treatment_alternative
+        end
+      end
+
       def approximate_percent_finshed
         @approximate_percent_finshed ||= num_trials(alternatives.first) / sample_size
       end
@@ -132,13 +152,12 @@ module Hyp
           )
         end
 
-        # TODO: probably want booleans or enums here rather than string names
         def control_alternative
-          alternatives.where(name: 'Control').first
+          alternatives.control.first
         end
 
         def treatment_alternative
-          alternatives.where(name: 'Treatment').first
+          alternatives.treatment.first
         end
     end
   end
