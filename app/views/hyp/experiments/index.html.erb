@@ -23,8 +23,8 @@
             <td><%= experiment.name %></td>
             <td><%= experiment.alpha %></td>
             <td><%= experiment.power %></td>
-            <td><%= experiment.control %></td>
-            <td><%= experiment.minimum_detectable_effect %></td>
+            <td><%= experiment.control.round(4) %></td>
+            <td><%= experiment.minimum_detectable_effect.round(4) %></td>
             <td><%= experiment.sample_size %></td>
             <td><%= link_to 'Details', experiment %></td>
             <% if experiment.started? %>
