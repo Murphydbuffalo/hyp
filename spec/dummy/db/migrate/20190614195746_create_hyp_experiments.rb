@@ -1,4 +1,3 @@
-# This migration comes from hyp (originally 20190427221623)
 class CreateHypExperiments < ActiveRecord::Migration[5.2]
   def change
     create_table :hyp_experiments do |t|
