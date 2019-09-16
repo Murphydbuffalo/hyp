@@ -52,7 +52,7 @@ $.post(
 );
 ```
 
-Visit the `/hyp/experients` page to CRUD your experiments:
+Visit the `/hyp/experiments` page to CRUD your experiments:
 
 Click on a particular experiment to see how far along it is, and what conclusions
 can be drawn from it (if any):
@@ -83,9 +83,9 @@ This will:
 
 `--db-interface` tells Hyp which ORM/ODM your application uses. It can be either `active_record` or `mongoid`. It defaults to `active_record` if not present.
 
-`--user-class` tells Hyp what class you'd like to use as the "user" or "actor"
-in your experiments. It can be any string that can be `#constantize`'d to a valid
-class from your application code. It defaults to `'User'` if not present.
+In Hyp we associate each trial with a particular user using a "has and belongs
+to many" relationships between the user and experiment. The `--user-class` option tells Hyp what class you'd like to use as the "user" in your experiments.
+It can be any string that can be `#constantize`'d to a valid class from your application code. It defaults to `'User'` if not present.
 
 If you add `--db-interface mongoid` the generator will:
 + Add `Hyp.db_interface = :mongoid` to `config/initializers/hyp.rb`.
