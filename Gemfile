@@ -13,3 +13,5 @@ gemspec
 
 # To use a debugger
 gem 'byebug', group: [:development, :test]
+
+gem "jquery-rails", "~> 4.3"
