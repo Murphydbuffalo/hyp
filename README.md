@@ -142,9 +142,6 @@ When an experiment is destroyed so are its dependent alternatives.
 + `has_many` `Hyp::ExperimentUserTrial`s. When an experiment is destroyed so are
 its dependent user trials.
 
-#### Database scopes
-None
-
 #### Database fields
 + `#alpha` - the significance level of the experiment. A float that is either 0.05 or 0.01.                    
 + `#control` - the conversion rate of the existing alternative of the feature. A float between 0.0 and 1.0.
@@ -154,9 +151,6 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#name` - the name of the experiment, a string.                      
 + `#power` - the statistical power of the experiment. A float that is either 0.80 or 0.90.                    
 + `#updated_at` - Timestamp
-
-#### Callbacks
-None
 
 #### Instance methods
 + `#alternative_name(user)` - Returns the name of the alternative a user belongs to for the experiment. The alternative for a given experiment and user will always be the same.
@@ -192,9 +186,6 @@ the treatment alternative that have converted.
 + `#name` - The name of the alternative, either `'control'`, or `'treatment'`.
 + `#updated_at` - Timestamp
 
-#### Callbacks
-None
-
 #### Instance methods
 + `#control?` - Is this the control alternative, the existing version of the
 feature that currently exists in your app?
@@ -207,18 +198,12 @@ feature that you'd like to compare to the control?
 + `belongs_to` a `Hyp::Alternative`.
 + `belongs_to` a `User` (or whatever the result of `#constantize`ing `Hyp.user_class_name` is).
 
-#### Database scopes
-None
-
 #### Database fields
 + `converted` - Boolean, defaults to `false`.
 
 #### Callbacks
 + `after_create` - If you've set `Hyp.experiment_complete_callback` to an object that responds to `#call` in the `config/intializers/hyp.rb` file that object will have `#call`
 invoked with the `#id` of the experiment once it has run to completion.
-
-#### Instance methods
-None
 
 ## Contributing
 Contributions are most welcome, but remember: You're required to be nice to others! It's the law!
