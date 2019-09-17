@@ -16,8 +16,9 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 4. [Authorization](#authorization)
 5. [Methodology](#methodology)
 6. [API](#api)
-7. [Contributing](#contributing)
-8. [License](#license)
+7. [Testing](#testing)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## Basic Usage
 Hyp requires two things from your application to start running experiments:
@@ -266,6 +267,15 @@ feature that you'd like to compare to the control?
 #### Callbacks
 + `after_create` - If you've set `Hyp.experiment_complete_callback` to an object that responds to `#call` in the `config/intializers/hyp.rb` file that object will have `#call`
 invoked with the `#id` of the experiment once it has run to completion.
+
+## Testing
+There are RSpec unit tests in the `spec` directory and and a dummy Rails application under `spec/dummy` you can boot up to play around with Hyp in the browser. To run the dummy app you need to:
+1. `Run a postgres server`
+2. `createdb dummy_development`
+3. `cd spec/dummy`
+4. `bundle install`
+5. `bundle exec rake db:migrate`
+6. `rails s`
 
 ## Contributing
 Contributions are most welcome, but remember: You're required to be nice to others! It's the law!
