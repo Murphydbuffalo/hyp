@@ -133,9 +133,9 @@ Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and st
 
 ## Methodology
 Hyp runs two-tailed hypothesis tests for the difference of two sample
-proportions: the proportion of users who converted on the control version of a
+proportions: the proportion of users who converted on the control variant of a
 feature and the proportion of users who converted on the treatment (new,
-experimental) version of a feature.
+experimental) variant of a feature.
 
 Our hypotheses are as follows:
 Null hypothesis,      h0: (control - treatment)  = 0
@@ -163,7 +163,7 @@ the probability of detecting a positive result (rejecting the null hypothesis) i
 one is present. Higher power means a lower probability of false negatives (not
 rejecting the null hypothesis when it is false).
 + Control proportion - You must have existing data on the conversion rate of the
-current version of the feature. This is the control proportion.
+current variant of the feature. This is the control proportion.
 + Minimum detectable effect - The smallest effect size you would care to detect.
 We don't want to run an experiment only to find out that our effect size, although
 statistically significant, is not large enough to deliver business value.
@@ -192,8 +192,8 @@ Perhaps no significant result will be detected: remember that you only have a
 percentage chance of detecting positive results equal to your chosen level of
 statistical power.
 
-You might decide to replace the existing version of the feature even if there is
-no statistically significant difference between the two versions simply because
+You might decide to replace the existing variant of the feature even if there is
+no statistically significant difference between the two variants simply because
 you prefer the code quality or esthetic quality of one variant as the Signal v.
 Noise blog points out in [an excellent post on the topic](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size).
 
@@ -250,9 +250,9 @@ the treatment variant that have converted.
 + `#updated_at` - Timestamp
 
 #### Instance methods
-+ `#control?` - Is this the control variant, the existing version of the
++ `#control?` - Is this the control variant, the existing variant of the
 feature that currently exists in your app?
-+ `#treatment?` - Is this the treatment variant, the new version of the
++ `#treatment?` - Is this the treatment variant, the new variant of the
 feature that you'd like to compare to the control?
 
 ### `Hyp::ExperimentUserTrial`
