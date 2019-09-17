@@ -43,7 +43,7 @@ module Hyp
       end
 
       def effect_size
-        @effect_size ||= treatment - control
+        @effect_size ||= (treatment - control).abs
       end
 
       # The variance of the difference between two random variables is the sum

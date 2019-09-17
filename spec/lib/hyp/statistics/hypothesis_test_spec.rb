@@ -64,5 +64,15 @@ describe Hyp::Statistics::HypothesisTest do
       )
       expect(subject.result).to be :fail_to_reject_null
     end
+
+    it 'returns :reject_null when the control is statistically significantly higher than the treatment' do
+      subject = described_class.new(
+        control: 0.07,
+        treatment: 0.05,
+        alpha: 0.05,
+        sample_size: 3_000
+      )
+      expect(subject.result).to be :reject_null
+    end
   end
 end
