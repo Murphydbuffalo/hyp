@@ -14,7 +14,7 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 2. [Installation and Configuration](#installation-and-configuration)
 3. [Get notified upon completion of an experiment](#get-notified-upon-completion-of-an-experiment)
 4. [Authorization](#authorization)
-5. [The Math](#the-math)
+5. [Methodology](#methodology)
 6. [API](#api)
 7. [Contributing](#contributing)
 8. [License](#license)
@@ -24,7 +24,7 @@ Hyp requires two things from your application to start running experiments:
 1. Unique identifiers for the users in your application.
 2. An existing conversion rate for the feature you want to experiment with. This
 is needed to calculate the required sample size for the experiment (more on that
-in the [Math](#math) section if you're curious.)
+in the [methodology](#methodology) section if you're curious.)
 
 Given those things you're ready to run some experiments!
 
@@ -130,8 +130,71 @@ Hyp.experiment_complete_callback = ->(experiment_id) {
 ## Authorization
 Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and staging environments. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD` environment variables, which will be the credentials required to log in.
 
-## The Math
-Coming soon!
+## Methodology
+Hyp runs two-tailed hypothesis tests for the difference of two sample
+proportions: the proportion of users who converted on the control version of a
+feature and the proportion of users who converted on the treatment (new,
+experimental) version of a feature.
+
+Our hypotheses are as follows:
+Null hypothesis,      h0: (control - treatment)  = 0
+Alternate hypothesis, hA: (control - treatment) != 0
+
+The effect size of the test is the difference between those two proportions.
+
+We calculate a z-score for that effect size, which is how many standard
+deviations it is from the mean of a normal distribution.
+
+This standard deviation calculation relies on the size of the sample the
+proportions are calculated for, and we determine this sample size prior to the
+running the experiment based the values of alpha, statistical power, minimum
+detectable effect, and the control proportion you have selected for it.
+
+This sample size is the smallest sample size required *for each variant* so that
+you will have your specified level of power given your level alpha, your control
+proportion, and an effect size at least as big as your MDE.
+
+Let's look at each of the parameters used to the sample size calculation in more depth:
++ Alpha - Required to be one of two conventional values: 0.05 or 0.01. This is
+the probability of a false positive, also known as the significance level.
++ Power - Required to be one of two conventional values: 0.80 or 0.90. This is
+the probability of detecting a positive result (rejecting the null hypothesis) if
+one is present. Higher power means a lower probability of false negatives (not
+rejecting the null hypothesis when it is false).
++ Control proportion - You must have existing data on the conversion rate of the
+current version of the feature. This is the control proportion.
++ Minimum detectable effect - The smallest effect size you would care to detect.
+We don't want to run an experiment only to find out that our effect size, although
+statistically significant, is not large enough to deliver business value.
+
+For a more in-depth discussion of these parameters and sample size calculations
+check out [my blog post on the subject](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab).
+
+Using our z-score we then calculate a p-value, or the probability of an effect
+size at least as large as ours occurring by random chance given that the null
+hypothesis is true.
+
+If this p-value is is lower than the experiment's level of alpha we have a
+statistically significant result.
+
+It is up to you to interpret the the results of the hypothesis test. A higher
+treatment conversion rate may be good, signifying a greater percentage of users
+who visited a page clicked on the sign up button. It may also be bad, perhaps
+signifying that a greater percentage of existing customers clicked the button to
+cancel their account.
+
+An experiment might tell you that while the results are significant, it is the
+*control* variant that performs better, and therefore that you should not
+replace it with the treatment.
+
+Perhaps no significant result will be detected: remember that you only have a
+percentage chance of detecting positive results equal to your chosen level of
+statistical power.
+
+You might decide to replace the existing version of the feature even if there is
+no statistically significant difference between the two versions simply because
+you prefer the code quality or esthetic quality of one variant as the Signal v.
+Noise blog points out in [an excellent post on the topic](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size).
 
 ## API
 ### `Hyp::Experiment`
