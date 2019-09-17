@@ -13,11 +13,21 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 1. [Basic Usage](#basic-usage)
 2. [Installation and Configuration](#installation-and-configuration)
 3. [Get notified upon completion of an experiment](#get-notified-upon-completion-of-an-experiment)
-4. [API](#api)
-5. [Contributing](#contributing)
-6. [License](#license)
+4. [Authorization](#authorization)
+5. [The Math](#the-math)
+6. [API](#api)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## Basic Usage
+Hyp requires two things from your application to start running experiments:
+1. Unique identifiers for the users in your application.
+2. An existing conversion rate for the feature you want to experiment with. This
+is needed to calculate the required sample size for the experiment (more on that
+in the [Math](#math) section if you're curious.)
+
+Given those things you're ready to run some experiments!
+
 Conditionally execute code based on the experiment alternative a user belongs to:
 ```ruby
 experiment  = Hyp::Experiment.find_by(name: 'My very first experiment')
@@ -29,6 +39,11 @@ else
   # do new behavior
 end
 ```
+
+User assignments are consistent, so a given user will always belong to the same
+alternative for a given experiment. The assignments are based on a SHA256 hash
+of both the user's and experiment's `#id`. *This means that your user entities
+must provide a unique identifier.*
 
 Record user trials and conversions via Ruby:
 ```ruby
@@ -112,8 +127,98 @@ Hyp.experiment_complete_callback = ->(experiment_id) {
 }
 ```
 
+## Authorization
+Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production environment. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD`
+environment variables, which will be the credentials required to log in.
+
+## The Math
+Coming soon!
+
 ## API
-Full API documentation coming soon!
+### `Hyp::Experiment`
+#### Associations
++ `has_many` `Hyp::Alternative`s, an experiment will always have two alternatives.
+When an experiment is destroyed so are its dependent alternatives.
++ `has_many` `Hyp::ExperimentUserTrial`s. When an experiment is destroyed so are
+its dependent user trials.
+
+#### Database scopes
+-
+
+#### Database fields
++ `#alpha` - the significance level of the experiment. A float that is either 0.05 or 0.01.                    
++ `#control` - the conversion rate of the existing alternative of the feature. A float between 0.0 and 1.0.
++ `#created_at` - Timestamp
++ `#minimum_detectable_effect` - the minimum detectable effect (MDE) of the
+experiment. This is the smallest effect size you care about. A float between 0.0 and 1.0.
++ `#name` - the name of the experiment, a string.                      
++ `#power` - the statistical power of the experiment. A float that is either 0.80 or 0.90.                    
++ `#updated_at` - Timestamp
+
+#### Callbacks
+-
+
+#### Instance methods
++ `#alternative_name(user)` - Returns the name of the alternative a user belongs to for the experiment. The alternative for a given experiment and user will always be the same.
++ `#approximate_percent_finished` - Percentage approximation of the proportion of
+trials recorded versus the required sample size of the experiment.
++ `#control_conversion_rate` - The proportion of users who have been exposed to
+the control alternative that have converted.
++ `#effect_size` - The difference between the control and treatment conversion rates. A float.
++ `#finished?` - Has the experiment recorded `#sample_size` trials for each alternative? Finished experiments cannot have any more trials or conversions
+recorded.
++ `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing alternative.
++ `#record_conversion(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database) with the `converted` field set to `true`.
++ `#record_trial(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database).
++ `#running?` - Has the experiment `#started?` but not `#finished?`
++ `#sample_size` - The number of trials *per alternative* required to reach statistical significance for the experiment's `#power` and `#minimum_detectable_effect`. A positive integer.
++ `#significant_result_found?` - Is the result statistically significant?
++ `#started?` - Have any trials been recorded for the experiment? Experiments that have started cannot be edited.
++ `#treatment_conversion_rate` - The proportion of users who have been exposed to
+the treatment alternative that have converted.
++ `#winner` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the winning alternative.
+
+### `Hyp::Alternative`
+#### Associations
++ `belongs_to` a `Hyp::Experiment`, which will always have two alternatives.
++ `has_many` `Hyp::ExperimentUserTrial`s.
+
+#### Database scopes
++ `.control` - Database scope that queries for control alternatives.
++ `.treatment` - Database scope that queries for treatment alternatives.
+
+#### Database fields
++ `#created_at` - Timestamp
++ `#name` - The name of the alternative, either `'control'`, or `'treatment'`.
++ `#updated_at` - Timestamp
+
+#### Callbacks
+-
+
+#### Instance methods
++ `#control?` - Is this the control alternative, the existing version of the
+feature that currently exists in your app?
++ `#treatment?` - Is this the treatment alternative, the new version of the
+feature that you'd like to compare to the control?
+
+### `Hyp::ExperimentUserTrial`
+#### Associations
++ `belongs_to` a `Hyp::Experiment`.
++ `belongs_to` a `Hyp::Alternative`.
++ `belongs_to` a `User` (or whatever the result of `#constantize`ing `Hyp.user_class_name` is).
+
+#### Database scopes
+-
+
+#### Database fields
++ `converted` - Boolean, defaults to `false`.
+
+#### Callbacks
++ `after_create` - If you've set `Hyp.experiment_complete_callback` to an object that responds to `#call` in the `config/intializers/hyp.rb` file that object will have `#call`
+invoked with the `#id` of the experiment once it has run to completion.
+
+#### Instance methods
+-
 
 ## Contributing
 Contributions are most welcome, but remember: You're required to be nice to others! It's the law!
