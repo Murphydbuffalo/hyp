@@ -7,6 +7,7 @@ module Hyp
         (1.0 - score) * 2
       end
 
+      # http://www.z-table.com/
       SCORES = {
         0.00 => 0.5000,
         0.01 => 0.5040,

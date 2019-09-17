@@ -41,7 +41,7 @@ describe Hyp::Statistics::SampleSize do
         expect(sample_size_c).to be 474
       end
 
-      # Higher control proportions have higher standard deviations (see
+      # Control proportions closer to 0.5 have higher standard deviations (see
       # `BernoulliDistributionStatistics` for details), which require larger
       # sample sizes to account for.
       it 'increases as the control proportion increases' do
