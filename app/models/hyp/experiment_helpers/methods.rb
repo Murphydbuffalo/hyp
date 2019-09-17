@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'hyp/statistics/sample_size'
 require 'hyp/statistics/hypothesis_test'
 require 'hyp/user_assignment'
@@ -32,8 +34,12 @@ module Hyp
         end
       end
 
+      def running?
+        started? && !finished?
+      end
+
       def winner
-        return nil unless finished?
+        return nil unless finished? && significant_result_found?
 
         if control_conversion_rate >= treatment_conversion_rate
           control_alternative
@@ -43,7 +49,7 @@ module Hyp
       end
 
       def loser
-        return nil unless finished?
+        return nil unless finished? && significant_result_found?
 
         if control_conversion_rate < treatment_conversion_rate
           control_alternative
@@ -98,12 +104,7 @@ module Hyp
       end
 
       def record_conversion(user)
-        trial_for(user)&.update!(converted: true)
-      end
-
-      def record_trial_and_conversion(user)
-        record_trial(user)
-        record_conversion(user)
+        record_trial(user)&.update!(converted: true)
       end
 
       private

@@ -33,5 +33,5 @@ exp = Hyp::ExperimentRepo.create(
 )
 
 idiots.each do |idiot|
-  exp.record_trial_and_conversion(idiot)
+  exp.record_conversion(idiot)
 end
