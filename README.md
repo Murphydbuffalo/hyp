@@ -143,7 +143,7 @@ When an experiment is destroyed so are its dependent alternatives.
 its dependent user trials.
 
 #### Database scopes
--
+None
 
 #### Database fields
 + `#alpha` - the significance level of the experiment. A float that is either 0.05 or 0.01.                    
@@ -156,7 +156,7 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#updated_at` - Timestamp
 
 #### Callbacks
--
+None
 
 #### Instance methods
 + `#alternative_name(user)` - Returns the name of the alternative a user belongs to for the experiment. The alternative for a given experiment and user will always be the same.
@@ -193,7 +193,7 @@ the treatment alternative that have converted.
 + `#updated_at` - Timestamp
 
 #### Callbacks
--
+None
 
 #### Instance methods
 + `#control?` - Is this the control alternative, the existing version of the
@@ -208,7 +208,7 @@ feature that you'd like to compare to the control?
 + `belongs_to` a `User` (or whatever the result of `#constantize`ing `Hyp.user_class_name` is).
 
 #### Database scopes
--
+None
 
 #### Database fields
 + `converted` - Boolean, defaults to `false`.
@@ -218,7 +218,7 @@ feature that you'd like to compare to the control?
 invoked with the `#id` of the experiment once it has run to completion.
 
 #### Instance methods
--
+None
 
 ## Contributing
 Contributions are most welcome, but remember: You're required to be nice to others! It's the law!
