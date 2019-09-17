@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest'
 
 module Hyp
@@ -16,7 +18,8 @@ module Hyp
     attr_reader :user, :experiment
 
     def user_experiment_hash
-      @user_experiment_hash ||= Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
+      @user_experiment_hash ||=
+        Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
     end
 
     def num_alternatives

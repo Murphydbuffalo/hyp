@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'hyp/statistics/bernoulli_distribution_statistics'
 
 module Hyp
