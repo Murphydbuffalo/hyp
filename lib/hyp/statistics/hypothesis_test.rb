@@ -43,10 +43,14 @@ module Hyp
         @effect_size ||= treatment - control
       end
 
+      # The variance of the difference between two random variables is the sum
+      # of each of those random variables' variations. You can think of this as
+      # each variable contributing some amount of uncertainty to the difference.
+      # https://www.khanacademy.org/math/ap-statistics/random-variables-ap/combining-random-variables/v/variance-of-sum-and-difference-of-random-variables
       def standard_deviation
         @standard_deviation ||= Math.sqrt(
-          bernoulli_distribution_standard_deviation(control)   / sample_size +
-          bernoulli_distribution_standard_deviation(treatment) / sample_size
+          bernoulli_distribution_variance(control)   / sample_size +
+          bernoulli_distribution_variance(treatment) / sample_size
         )
       end
     end

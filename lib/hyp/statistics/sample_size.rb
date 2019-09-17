@@ -21,7 +21,7 @@ module Hyp
           (
             (
               adjustment_for_power_and_alpha *
-              (control_standard_deviation + treatment_standard_deviation)
+              (control_variance + treatment_variance)
             ) / absolute_difference_in_proportions ** 2
           ) + (2 / absolute_difference_in_proportions) + 2
         ).ceil
@@ -46,14 +46,14 @@ module Hyp
           end
       end
 
-      def control_standard_deviation
-        @control_standard_deviation ||=
-          bernoulli_distribution_standard_deviation(control)
+      def control_variance
+        @control_variance ||=
+          bernoulli_distribution_variance(control)
       end
 
-      def treatment_standard_deviation
-        @treatment_standard_deviation ||=
-          bernoulli_distribution_standard_deviation(minimum_detectable_treatment)
+      def treatment_variance
+        @treatment_variance ||=
+          bernoulli_distribution_variance(minimum_detectable_treatment)
       end
 
       def absolute_difference_in_proportions
