@@ -128,8 +128,7 @@ Hyp.experiment_complete_callback = ->(experiment_id) {
 ```
 
 ## Authorization
-Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production environment. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD`
-environment variables, which will be the credentials required to log in.
+Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and staging environments. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD` environment variables, which will be the credentials required to log in.
 
 ## The Math
 Coming soon!
