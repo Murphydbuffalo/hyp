@@ -30,12 +30,15 @@ module Hyp
 
       attr_reader :control, :treatment, :sample_size, :alpha
 
+      # The probability of seeing a test statistic at least as far from the mean
+      # on a normal distributio as our is.
       def p_value
         @p_value ||= ZTable.two_tail_probability(test_statistic)
       end
 
+      # The effect size measured in number of standard deviations.
       def test_statistic
-        return 0.0 if standard_deviation == 0.0
+        return 0.0 if standard_deviation.zero?
         effect_size / standard_deviation
       end
 
