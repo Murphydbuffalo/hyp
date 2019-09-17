@@ -10,29 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_14_195748) do
+ActiveRecord::Schema.define(version: 2019_09_17_224010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "hyp_alternatives", force: :cascade do |t|
-    t.string "name", null: false
-    t.bigint "hyp_experiment_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["hyp_experiment_id"], name: "index_hyp_alternatives_on_hyp_experiment_id"
-  end
-
   create_table "hyp_experiment_user_trials", force: :cascade do |t|
     t.bigint "hyp_experiment_id"
-    t.bigint "hyp_alternative_id"
+    t.bigint "hyp_variant_id"
     t.boolean "converted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "idiot_id"
-    t.index ["hyp_alternative_id"], name: "index_hyp_experiment_user_trials_on_hyp_alternative_id"
     t.index ["hyp_experiment_id", "idiot_id"], name: "uniq_experiment_user_trials_idx", unique: true
     t.index ["hyp_experiment_id"], name: "index_hyp_experiment_user_trials_on_hyp_experiment_id"
+    t.index ["hyp_variant_id"], name: "index_hyp_experiment_user_trials_on_hyp_variant_id"
   end
 
   create_table "hyp_experiments", force: :cascade do |t|
@@ -46,6 +38,14 @@ ActiveRecord::Schema.define(version: 2019_06_14_195748) do
     t.index ["name"], name: "index_hyp_experiments_on_name", unique: true
   end
 
+  create_table "hyp_variants", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "hyp_experiment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hyp_experiment_id"], name: "index_hyp_variants_on_hyp_experiment_id"
+  end
+
   create_table "idiots", force: :cascade do |t|
     t.string "name"
     t.integer "age"
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(version: 2019_06_14_195748) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "hyp_alternatives", "hyp_experiments"
-  add_foreign_key "hyp_experiment_user_trials", "hyp_alternatives"
   add_foreign_key "hyp_experiment_user_trials", "hyp_experiments"
+  add_foreign_key "hyp_experiment_user_trials", "hyp_variants"
   add_foreign_key "hyp_experiment_user_trials", "idiots"
+  add_foreign_key "hyp_variants", "hyp_experiments"
 end

@@ -26,8 +26,8 @@ module Hyp
 
       def finished?
         if @finished.nil?
-          alternatives.all? do |alternative|
-            num_trials(alternative) >= sample_size
+          variants.all? do |variant|
+            num_trials(variant) >= sample_size
           end
         else
           @finished
@@ -42,9 +42,9 @@ module Hyp
         return nil unless finished? && significant_result_found?
 
         if control_conversion_rate >= treatment_conversion_rate
-          control_alternative
+          control_variant
         else
-          treatment_alternative
+          treatment_variant
         end
       end
 
@@ -52,19 +52,19 @@ module Hyp
         return nil unless finished? && significant_result_found?
 
         if control_conversion_rate < treatment_conversion_rate
-          control_alternative
+          control_variant
         else
-          treatment_alternative
+          treatment_variant
         end
       end
 
       def approximate_percent_finished
-        @approximate_percent_finished ||= num_trials(alternatives.first) / sample_size
+        @approximate_percent_finished ||= num_trials(variants.first) / sample_size
       end
 
       def control_conversion_rate
         @control_conversion_rate ||= begin
-          control_number_of_trials = num_trials(control_alternative)
+          control_number_of_trials = num_trials(control_variant)
 
           if control_number_of_trials.zero?
             0.0
@@ -76,7 +76,7 @@ module Hyp
 
       def treatment_conversion_rate
         @treatment_conversion_rate ||= begin
-          treatment_number_of_trials = num_trials(treatment_alternative)
+          treatment_number_of_trials = num_trials(treatment_variant)
 
           if treatment_number_of_trials.zero?
             0.0
@@ -94,13 +94,13 @@ module Hyp
         hypothesis_test.result == :reject_null
       end
 
-      def alternative_name(user)
-        alternative_for(user).name
+      def variant_name(user)
+        variant_for(user).name
       end
 
       def record_trial(user)
-        alternative = alternative_for(user)
-        find_or_create_trial(alternative, user) if num_trials(alternative) < sample_size
+        variant = variant_for(user)
+        find_or_create_trial(variant, user) if num_trials(variant) < sample_size
       end
 
       def record_conversion(user)
@@ -118,23 +118,23 @@ module Hyp
           )
         end
 
-        def alternative_for(user)
+        def variant_for(user)
           user_assigner = UserAssignment.new(user: user, experiment: self)
-          alternatives.order(:id)[user_assigner.alternative_index]
+          variants.order(:id)[user_assigner.variant_index]
         end
 
-        def num_trials(alternative)
-          ExperimentUserTrial.where(alternative: alternative).count
+        def num_trials(variant)
+          ExperimentUserTrial.where(variant: variant).count
         end
 
         def trial_for(user)
           ExperimentUserTrial.where(experiment: self, user: user).first
         end
 
-        def find_or_create_trial(alternative, user)
+        def find_or_create_trial(variant, user)
           ExperimentUserTrial.find_or_initialize_by(
             experiment:  self,
-            alternative: alternative,
+            variant: variant,
             user:        user
           ).save!
         end
@@ -142,23 +142,23 @@ module Hyp
         def control_trials
           ExperimentUserTrial.where(
             experiment: self,
-            alternative: control_alternative
+            variant: control_variant
           )
         end
 
         def treatment_trials
           ExperimentUserTrial.where(
             experiment: self,
-            alternative: treatment_alternative
+            variant: treatment_variant
           )
         end
 
-        def control_alternative
-          alternatives.control.first
+        def control_variant
+          variants.control.first
         end
 
-        def treatment_alternative
-          alternatives.treatment.first
+        def treatment_variant
+          variants.treatment.first
         end
     end
   end

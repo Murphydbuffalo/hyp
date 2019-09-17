@@ -25,7 +25,7 @@
         <h3>Experiment Progress</h3>
 
         <p>
-          <strong>Required sample size per alternative:</strong> <%= @experiment.sample_size %>
+          <strong>Required sample size per variant:</strong> <%= @experiment.sample_size %>
         </p>
 
         <div class='progress-bar'>
@@ -53,7 +53,7 @@
           <% if @experiment.significant_result_found? %>
             <%= "#{@experiment.winner.name} is #{@experiment.effect_size}% more effective than #{@experiment.loser.name}"%>
           <% else %>
-            No significant difference was found between the two alternatives.
+            No significant difference was found between the two variants.
           <% end %>
         <% else %>
           <%= "The experiment is roughly #{@experiment.approximate_percent_finished}% complete. No statistically significant conculsions can be made until it is complete." %>

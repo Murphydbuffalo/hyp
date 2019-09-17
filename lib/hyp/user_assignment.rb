@@ -9,8 +9,8 @@ module Hyp
       @experiment = experiment
     end
 
-    def alternative_index
-      user_experiment_hash.to_i(16) % num_alternatives
+    def variant_index
+      user_experiment_hash.to_i(16) % num_variants
     end
 
     private
@@ -22,8 +22,8 @@ module Hyp
         Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
     end
 
-    def num_alternatives
-      experiment.alternatives.count
+    def num_variants
+      experiment.variants.count
     end
   end
 end

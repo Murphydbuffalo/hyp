@@ -1,5 +1,5 @@
 module Hyp
-  module AlternativeHelpers
+  module VariantHelpers
     module Scopes
       def self.extended(extending_class)
         extending_class.instance_eval(

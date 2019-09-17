@@ -4,7 +4,7 @@ module Hyp
       include Hyp::ExperimentHelpers::Methods
       extend  Hyp::ExperimentHelpers::Validations
 
-      has_many  :alternatives, foreign_key: 'hyp_experiment_id', dependent: :destroy
+      has_many  :variants, foreign_key: 'hyp_experiment_id', dependent: :destroy
       has_many  :experiment_user_trials, foreign_key: 'hyp_experiment_id', dependent: :destroy
     end
   elsif Hyp.db_interface == :mongoid
@@ -14,7 +14,7 @@ module Hyp
       include Hyp::ExperimentHelpers::Methods
       extend  Hyp::ExperimentHelpers::Validations
 
-      has_many  :alternatives, class_name: 'Hyp::Alternative', foreign_key: 'hyp_experiment_id', dependent: :destroy
+      has_many  :variants, class_name: 'Hyp::Variant', foreign_key: 'hyp_experiment_id', dependent: :destroy
       has_many  :experiment_user_trials, class_name: 'Hyp::ExperimentUserTrial', foreign_key: 'hyp_experiment_id', dependent: :destroy
 
       field :name,                      type: String
@@ -29,9 +29,9 @@ module Hyp
 
       # Override definition in `ExperimentHelpers::Methods` to use Mongoid's
       # `desc` instead of ActiveRecord's `order`
-      def alternative_for(user)
+      def variant_for(user)
         user_assigner = UserAssignment.new(user: user, experiment: self)
-        alternatives.desc(:id)[user_assigner.alternative_index]
+        variants.desc(:id)[user_assigner.variant_index]
       end
     end
   end

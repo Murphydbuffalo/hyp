@@ -29,12 +29,12 @@ in the [methodology](#methodology) section if you're curious.)
 
 Given those things you're ready to run some experiments!
 
-Conditionally execute code based on the experiment alternative a user belongs to:
+Conditionally execute code based on the experiment variant a user belongs to:
 ```ruby
 experiment  = Hyp::Experiment.find_by(name: 'My very first experiment')
-alternative = experiment.alternative_for(user)
+variant = experiment.variant_for(user)
 
-if alternative.control?
+if variant.control?
   # do existing behavior
 else
   # do new behavior
@@ -42,7 +42,7 @@ end
 ```
 
 User assignments are consistent, so a given user will always belong to the same
-alternative for a given experiment. The assignments are based on a SHA256 hash
+variant for a given experiment. The assignments are based on a SHA256 hash
 of both the user's and experiment's `#id`. *This means that your user entities
 must provide a unique identifier.*
 
@@ -200,14 +200,14 @@ Noise blog points out in [an excellent post on the topic](https://signalvnoise.c
 ## API
 ### `Hyp::Experiment`
 #### Associations
-+ `has_many` `Hyp::Alternative`s, an experiment will always have two alternatives.
-When an experiment is destroyed so are its dependent alternatives.
++ `has_many` `Hyp::Variant`s, an experiment will always have two variants.
+When an experiment is destroyed so are its dependent variants.
 + `has_many` `Hyp::ExperimentUserTrial`s. When an experiment is destroyed so are
 its dependent user trials.
 
 #### Database fields
 + `#alpha` - the significance level of the experiment. A float that is either 0.05 or 0.01.                    
-+ `#control` - the conversion rate of the existing alternative of the feature. A float between 0.0 and 1.0.
++ `#control` - the conversion rate of the existing variant of the feature. A float between 0.0 and 1.0.
 + `#created_at` - Timestamp
 + `#minimum_detectable_effect` - the minimum detectable effect (MDE) of the
 experiment. This is the smallest effect size you care about. A float between 0.0 and 1.0.
@@ -216,49 +216,49 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#updated_at` - Timestamp
 
 #### Instance methods
-+ `#alternative_name(user)` - Returns the name of the alternative a user belongs to for the experiment. The alternative for a given experiment and user will always be the same.
++ `#variant_name(user)` - Returns the name of the variant a user belongs to for the experiment. The variant for a given experiment and user will always be the same.
 + `#approximate_percent_finished` - Percentage approximation of the proportion of
 trials recorded versus the required sample size of the experiment.
 + `#control_conversion_rate` - The proportion of users who have been exposed to
-the control alternative that have converted.
+the control variant that have converted.
 + `#effect_size` - The difference between the control and treatment conversion rates. A float.
-+ `#finished?` - Has the experiment recorded `#sample_size` trials for each alternative? Finished experiments cannot have any more trials or conversions
++ `#finished?` - Has the experiment recorded `#sample_size` trials for each variant? Finished experiments cannot have any more trials or conversions
 recorded.
-+ `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing alternative.
++ `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing variant.
 + `#record_conversion(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database) with the `converted` field set to `true`.
 + `#record_trial(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database).
 + `#running?` - Has the experiment `#started?` but not `#finished?`
-+ `#sample_size` - The number of trials *per alternative* required to reach statistical significance for the experiment's `#power` and `#minimum_detectable_effect`. A positive integer.
++ `#sample_size` - The number of trials *per variant* required to reach statistical significance for the experiment's `#power` and `#minimum_detectable_effect`. A positive integer.
 + `#significant_result_found?` - Is the result statistically significant?
 + `#started?` - Have any trials been recorded for the experiment? Experiments that have started cannot be edited.
 + `#treatment_conversion_rate` - The proportion of users who have been exposed to
-the treatment alternative that have converted.
-+ `#winner` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the winning alternative.
+the treatment variant that have converted.
++ `#winner` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the winning variant.
 
-### `Hyp::Alternative`
+### `Hyp::Variant`
 #### Associations
-+ `belongs_to` a `Hyp::Experiment`, which will always have two alternatives.
++ `belongs_to` a `Hyp::Experiment`, which will always have two variants.
 + `has_many` `Hyp::ExperimentUserTrial`s.
 
 #### Database scopes
-+ `.control` - Database scope that queries for control alternatives.
-+ `.treatment` - Database scope that queries for treatment alternatives.
++ `.control` - Database scope that queries for control variants.
++ `.treatment` - Database scope that queries for treatment variants.
 
 #### Database fields
 + `#created_at` - Timestamp
-+ `#name` - The name of the alternative, either `'control'`, or `'treatment'`.
++ `#name` - The name of the variant, either `'control'`, or `'treatment'`.
 + `#updated_at` - Timestamp
 
 #### Instance methods
-+ `#control?` - Is this the control alternative, the existing version of the
++ `#control?` - Is this the control variant, the existing version of the
 feature that currently exists in your app?
-+ `#treatment?` - Is this the treatment alternative, the new version of the
++ `#treatment?` - Is this the treatment variant, the new version of the
 feature that you'd like to compare to the control?
 
 ### `Hyp::ExperimentUserTrial`
 #### Associations
 + `belongs_to` a `Hyp::Experiment`.
-+ `belongs_to` a `Hyp::Alternative`.
++ `belongs_to` a `Hyp::Variant`.
 + `belongs_to` a `User` (or whatever the result of `#constantize`ing `Hyp.user_class_name` is).
 
 #### Database fields
@@ -274,8 +274,9 @@ There are RSpec unit tests in the `spec` directory and and a dummy Rails applica
 2. `createdb dummy_development`
 3. `cd spec/dummy`
 4. `bundle install`
-5. `bundle exec rake db:migrate`
-6. `rails s`
+5. `rails g hyp:install`
+6. `bundle exec rake db:migrate`
+7. `rails s`
 
 ## Contributing
 Contributions are most welcome, but remember: You're required to be nice to others! It's the law!

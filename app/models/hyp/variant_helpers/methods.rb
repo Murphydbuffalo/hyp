@@ -1,5 +1,5 @@
 module Hyp
-  module AlternativeHelpers
+  module VariantHelpers
     module Methods
       def control?
         name == 'Control'

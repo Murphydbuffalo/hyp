@@ -2,15 +2,15 @@ module Hyp
   class ExperimentRepo
     class << self
       def list(offset: 0, limit: 25)
-        Hyp::Experiment.offset(offset).limit(limit).includes(:alternatives)
+        Hyp::Experiment.offset(offset).limit(limit).includes(:variants)
       end
 
       def find(id)
-        Hyp::Experiment.includes(:alternatives).find(id)
+        Hyp::Experiment.includes(:variants).find(id)
       end
 
       def find_by(query)
-        Hyp::Experiment.includes(:alternatives).where(query).first
+        Hyp::Experiment.includes(:variants).where(query).first
       end
 
       def create(params)
@@ -24,7 +24,7 @@ module Hyp
 
         ActiveRecord::Base.transaction do
           if experiment.save
-            experiment.alternatives.create(alternatives_params)
+            experiment.variants.create(variants_params)
           end
         end
 
@@ -35,13 +35,13 @@ module Hyp
         experiment = Hyp::Experiment.new(params)
 
         if experiment.save
-          experiment.alternatives.create(alternatives_params)
+          experiment.variants.create(variants_params)
         end
 
         experiment
       end
 
-      def alternatives_params
+      def variants_params
         [
           {
             name: 'Control'
