@@ -216,23 +216,23 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#updated_at` - Timestamp
 
 #### Instance methods
-+ `#variant_name(user)` - Returns the name of the variant a user belongs to for the experiment. The variant for a given experiment and user will always be the same.
-+ `#approximate_percent_finished` - Percentage approximation of the proportion of
-trials recorded versus the required sample size of the experiment.
++ `#percent_finished` - What percentage of the required sample size (for all
+variants) has been met?
 + `#control_conversion_rate` - The proportion of users who have been exposed to
 the control variant that have converted.
++ `#control_variant` - the control instance of `Hyp::Variant` for this experiment.
 + `#effect_size` - The difference between the control and treatment conversion rates. A float.
 + `#finished?` - Has the experiment recorded `#sample_size` trials for each variant? Finished experiments cannot have any more trials or conversions
 recorded.
 + `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing variant.
 + `#record_conversion(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database) with the `converted` field set to `true`.
 + `#record_trial(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database).
-+ `#running?` - Has the experiment `#started?` but not `#finished?`
 + `#sample_size` - The number of trials *per variant* required to reach statistical significance for the experiment's `#power` and `#minimum_detectable_effect`. A positive integer.
 + `#significant_result_found?` - Is the result statistically significant?
 + `#started?` - Have any trials been recorded for the experiment? Experiments that have started cannot be edited.
 + `#treatment_conversion_rate` - The proportion of users who have been exposed to
 the treatment variant that have converted.
++ `#treatment_variant` - the treatment instance of `Hyp::Variant` for this experiment.
 + `#winner` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the winning variant.
 
 ### `Hyp::Variant`
@@ -269,7 +269,12 @@ feature that you'd like to compare to the control?
 invoked with the `#id` of the experiment once it has run to completion.
 
 ## Testing
-There are RSpec unit tests in the `spec` directory and and a dummy Rails application under `spec/dummy` you can boot up to play around with Hyp in the browser. To run the dummy app you need to:
+There are RSpec unit tests for code that doesn't depend on Rails in the `spec`
+directory as well as a dummy Rails application under `spec/dummy`.
+
+There are specs for Rails-dependent classes in `spec/dummy/spec`, and you can
+also boot up the dummy application to play around with Hyp in the browser. To
+run the dummy app you need to:
 1. `Run a postgres server`
 2. `createdb dummy_development`
 3. `cd spec/dummy`
