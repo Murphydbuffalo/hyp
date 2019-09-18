@@ -101,6 +101,19 @@ module Hyp
         record_trial(user)&.update!(converted: true)
       end
 
+      def control_variant
+        variants.control.first
+      end
+
+      def treatment_variant
+        variants.treatment.first
+      end
+
+      def variant_for(user)
+        user_assigner = UserAssignment.new(user: user, experiment: self)
+        variants.order(:id)[user_assigner.variant_index]
+      end
+
       private
 
         def hypothesis_test
@@ -110,11 +123,6 @@ module Hyp
             sample_size: sample_size,
             alpha:       alpha
           )
-        end
-
-        def variant_for(user)
-          user_assigner = UserAssignment.new(user: user, experiment: self)
-          variants.order(:id)[user_assigner.variant_index]
         end
 
         def num_trials(variant)
@@ -127,32 +135,18 @@ module Hyp
 
         def find_or_create_trial(variant, user)
           ExperimentUserTrial.find_or_initialize_by(
-            experiment:  self,
-            variant: variant,
-            user:        user
-          ).save!
+            experiment: self,
+            variant:    variant,
+            user:       user
+          ).tap(&:save!)
         end
 
         def control_trials
-          ExperimentUserTrial.where(
-            experiment: self,
-            variant: control_variant
-          )
+          ExperimentUserTrial.where(experiment: self, variant: control_variant)
         end
 
         def treatment_trials
-          ExperimentUserTrial.where(
-            experiment: self,
-            variant: treatment_variant
-          )
-        end
-
-        def control_variant
-          variants.control.first
-        end
-
-        def treatment_variant
-          variants.treatment.first
+          ExperimentUserTrial.where(experiment: self, variant: treatment_variant)
         end
     end
   end
