@@ -61,27 +61,11 @@ module Hyp
       end
 
       def control_conversion_rate
-        @control_conversion_rate ||= begin
-          control_number_of_trials = num_trials(control_variant)
-
-          if control_number_of_trials.zero?
-            0.0
-          else
-            control_trials.where(converted: true).count / control_number_of_trials.to_f
-          end
-        end
+        @control_conversion_rate ||= conversion_rate(control_variant)
       end
 
       def treatment_conversion_rate
-        @treatment_conversion_rate ||= begin
-          treatment_number_of_trials = num_trials(treatment_variant)
-
-          if treatment_number_of_trials.zero?
-            0.0
-          else
-            treatment_trials.where(converted: true).count / treatment_number_of_trials.to_f
-          end
-        end
+        @treatment_conversion_rate ||= conversion_rate(treatment_variant)
       end
 
       def effect_size
@@ -115,6 +99,16 @@ module Hyp
       end
 
       private
+
+        def conversion_rate(variant)
+          number_of_trials = num_trials(variant)
+
+          (if number_of_trials.zero?
+            0.0
+          else
+            variant.experiment_user_trials.where(converted: true).count / variant.experiment_user_trials.count.to_f
+          end * 100).round(2)
+        end
 
         def hypothesis_test
           @hypothesis_test ||= Hyp::Statistics::HypothesisTest.new(

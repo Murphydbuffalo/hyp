@@ -213,7 +213,7 @@ describe Hyp::Experiment do
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.control_conversion_rate).to be 0.5
+          expect(subject.control_conversion_rate).to be 50.0
         end
       end
     end
@@ -237,13 +237,13 @@ describe Hyp::Experiment do
 
       context 'some trials converted' do
         before do
-          Idiot.limit(5).each do |idiot|
+          Idiot.limit(7).each do |idiot|
             subject.record_conversion(idiot)
           end
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.treatment_conversion_rate).to be 0.5
+          expect(subject.treatment_conversion_rate).to be 70.0
         end
       end
     end
