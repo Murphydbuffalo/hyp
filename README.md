@@ -25,7 +25,14 @@ Hyp requires two things from your application to start running experiments:
 1. Unique identifiers for the users in your application.
 2. An existing conversion rate for the feature you want to experiment with. This
 is needed to calculate the required sample size for the experiment (more on that
-in the [methodology](#methodology) section if you're curious.)
+in the [methodology](#methodology) section if you're curious). If you don't have
+data on an existing version of the feature - maybe you haven't released it yet -
+go and gather some data before running experiments on it. In practice this isn't
+a terrible experience: release a version of your feature and gather data on its
+conversion rate until you have several hundred examples. Now you're ready to go
+with a reasonable baseline of how the feature performs AND you've had time to
+work out any major kinks in the release before you start experimenting with
+different versions of it.
 
 Given those things you're ready to run some experiments!
 
