@@ -30,5 +30,19 @@ describe Hyp::UserAssignment do
         expect(index2).to be 1
       end
     end
+
+    it 'evenly distributes users between experiment variants' do
+      assignments = (0..1_000).each_with_object({}) do |i, hash|
+        user  = double("User #{i}", id: i)
+        index = described_class.new(user: user, experiment: experiment_a).variant_index
+
+        hash[index] ||= 0
+        hash[index]  += 1
+      end
+
+      diff = (assignments[0] - assignments[1]).abs
+
+      expect(diff).to be < 10
+    end
   end
 end
