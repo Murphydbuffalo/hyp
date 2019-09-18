@@ -34,10 +34,6 @@ module Hyp
         end
       end
 
-      def running?
-        started? && !finished?
-      end
-
       def winner
         return nil unless finished? && significant_result_found?
 
