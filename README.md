@@ -272,14 +272,17 @@ invoked with the `#id` of the experiment once it has run to completion.
 There are RSpec unit tests for code that doesn't depend on Rails in the `spec`
 directory as well as a dummy Rails application under `spec/dummy`.
 
-There are specs for Rails-dependent classes in `spec/dummy/spec`, and you can
-also boot up the dummy application to play around with Hyp in the browser. To
-run the dummy app you need to:
-1. `Run a postgres server`
-2. `createdb dummy_development`
-3. `cd spec/dummy`
-4. `bundle install`
-5. `rails g hyp:install`
+There are specs for Rails-dependent classes in `spec/dummy/spec`, to run those:
+1. `cd spec/dummy`
+2. `rspec spec/**/*_spec.rb`
+
+You can also boot up the dummy application to play around with Hyp in the browser.
+To. run the dummy app you need to:
+1. `cd spec/dummy`
+2. `Run a local postgres server`
+3. `createdb dummy_development`
+4. `cd spec/dummy`
+5. `bundle install`
 6. `bundle exec rake db:migrate`
 7. `rails s`
 
