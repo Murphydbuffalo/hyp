@@ -92,10 +92,6 @@ module Hyp
         hypothesis_test.result == :reject_null
       end
 
-      def variant_name(user)
-        variant_for(user).name
-      end
-
       def record_trial(user)
         variant = variant_for(user)
         find_or_create_trial(variant, user) if num_trials(variant) < sample_size
