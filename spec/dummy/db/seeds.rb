@@ -1,5 +1,3 @@
-require 'hyp/services/experiment_creation'
-
 idiots = Idiot.create!([
   {name: 'Dan', age: 1},
   {name: 'Mark', age: 2},
@@ -28,8 +26,8 @@ idiots = Idiot.create!([
 
 exp = Hyp::ExperimentRepo.create(
   name: 'Sign Up CTA Copy',
-  control: 0.02,
-  minimum_detectable_effect: 0.99
+  control: 0.01,
+  minimum_detectable_effect: 0.2
 )
 
 idiots.each do |idiot|
