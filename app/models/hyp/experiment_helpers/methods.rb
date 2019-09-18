@@ -85,7 +85,7 @@ module Hyp
       end
 
       def effect_size
-        hypothesis_test.effect_size.abs
+        hypothesis_test.effect_size
       end
 
       def significant_result_found?
