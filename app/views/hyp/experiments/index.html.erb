@@ -4,39 +4,45 @@
 
     <h1>Experiments</h1>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Alpha</th>
-          <th>Power</th>
-          <th>Control</th>
-          <th>Minimum detectable effect</th>
-          <th>Sample size</th>
-          <th colspan="3"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @experiments.each do |experiment| %>
+    <% if @experiments.none? %>
+      <p>
+        You don't have any experiments yet! <%= link_to 'Click here', new_experiment_path %> to get started.
+      </p>
+    <% else %>
+      <table>
+        <thead>
           <tr>
-            <td><%= experiment.name %></td>
-            <td><%= experiment.alpha %></td>
-            <td><%= experiment.power %></td>
-            <td><%= experiment.control.round(4) %></td>
-            <td><%= experiment.minimum_detectable_effect.round(4) %></td>
-            <td><%= experiment.sample_size %></td>
-            <td><%= link_to 'Details', experiment %></td>
-            <% if experiment.started? %>
-              <td>----</td>
-            <% else %>
-              <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
-            <% end %>
-            <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <th>Name</th>
+            <th>Alpha</th>
+            <th>Power</th>
+            <th>Control</th>
+            <th>Minimum detectable effect</th>
+            <th>Sample size</th>
+            <th colspan="3"></th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          <% @experiments.each do |experiment| %>
+            <tr>
+              <td><%= experiment.name %></td>
+              <td><%= experiment.alpha %></td>
+              <td><%= experiment.power %></td>
+              <td><%= experiment.control.round(4) %></td>
+              <td><%= experiment.minimum_detectable_effect.round(4) %></td>
+              <td><%= experiment.sample_size %></td>
+              <td><%= link_to 'Details', experiment %></td>
+              <% if experiment.started? %>
+                <td>----</td>
+              <% else %>
+                <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+              <% end %>
+              <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
   </div>
 </header>
 
