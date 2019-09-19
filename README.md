@@ -61,12 +61,13 @@ $.post(
 ```
 
 Visit the `/hyp/experiments` page to CRUD your experiments:
-TODO add screenshot of index page
-TODO add screenshot of form
+![Making a new experiment](https://raw.githubusercontent.com/Murphydbuffalo/hyp/master/app/assets/images/hyp/new_experiment.png)
+
+![Viewing existing experiments](https://raw.githubusercontent.com/Murphydbuffalo/hyp/master/app/assets/images/hyp/experiment_index.png)
 
 Click on a particular experiment to see how far along it is, and what conclusions
 can be drawn from it (if any):
-TODO add screenshot of in-progress experiment
+![Viewing the details of an ongoing experiment](https://raw.githubusercontent.com/Murphydbuffalo/hyp/master/app/assets/images/hyp/in_progress_experiment.png)
 
 ## Installation and Configuration
 Add this line to your application's Gemfile:
