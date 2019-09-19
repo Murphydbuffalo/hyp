@@ -253,7 +253,7 @@ the control variant that have converted.
 + `#effect_size` - The difference between the control and treatment conversion rates. A float.
 + `#finished?` - Has the experiment recorded `#sample_size` trials for each variant? Finished experiments cannot have any more trials or conversions
 recorded.
-+ `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing variant.
++ `#loser` - Returns `nil` if the experiment is not `finished?`, if no significant result was found, or if the `#effect_size` is lower than the `#minimum_detectable_effect`. Otherwise returns the losing variant.
 + `#progress` - What fraction of the required sample size (for all variants) has been met? A float from 0.0 to 1.0.
 + `#record_conversion(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database) with the `converted` field set to `true`.
 + `#record_trial(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database).
@@ -263,7 +263,7 @@ recorded.
 + `#treatment_conversion_rate` - The percentage of users who have been exposed to
 the treatment variant that have converted.
 + `#treatment_variant` - the treatment instance of `Hyp::Variant` for this experiment.
-+ `#winner` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the winning variant.
++ `#winner` - Returns `nil` if the experiment is not `finished?`, if no significant result was found, or if the `#effect_size` is lower than the `#minimum_detectable_effect`. Otherwise returns the winning variant.
 
 ### `Hyp::Variant`
 #### Associations
