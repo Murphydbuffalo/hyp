@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require "hyp/engine"
+require 'hyp/engine'
+require 'hyp/experiment_repo'
 
 module Hyp
   mattr_writer :db_interface, :user_class_name
