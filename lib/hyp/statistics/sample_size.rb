@@ -29,42 +29,42 @@ module Hyp
 
       private
 
-      attr_reader :alpha, :power, :control, :minimum_detectable_effect
+        attr_reader :alpha, :power, :control, :minimum_detectable_effect
 
-      def adjustment_for_power_and_alpha
-        @adjustment_for_power_and_alpha ||=
-          if alpha == 0.05 && power == 0.80
-            7.85
-          elsif alpha == 0.01 && power == 0.80
-            11.68
-          elsif alpha == 0.05 && power == 0.90
-            10.51
-          elsif alpha == 0.01 && power == 0.90
-            14.88
-          else
-            raise ArgumentError, 'Invalid alpha or power. Allowed values of alpha are 0.05 or 0.01, and allowed values of power are 0.8 or 0.9'
-          end
-      end
+        def adjustment_for_power_and_alpha
+          @adjustment_for_power_and_alpha ||=
+            if alpha == 0.05 && power == 0.80
+              7.85
+            elsif alpha == 0.01 && power == 0.80
+              11.68
+            elsif alpha == 0.05 && power == 0.90
+              10.51
+            elsif alpha == 0.01 && power == 0.90
+              14.88
+            else
+              raise ArgumentError, 'Invalid alpha or power. Allowed values of alpha are 0.05 or 0.01, and allowed values of power are 0.8 or 0.9'
+            end
+        end
 
-      def control_variance
-        @control_variance ||=
-          bernoulli_distribution_variance(control)
-      end
+        def control_variance
+          @control_variance ||=
+            bernoulli_distribution_variance(control)
+        end
 
-      def treatment_variance
-        @treatment_variance ||=
-          bernoulli_distribution_variance(minimum_detectable_treatment)
-      end
+        def treatment_variance
+          @treatment_variance ||=
+            bernoulli_distribution_variance(minimum_detectable_treatment)
+        end
 
-      def absolute_difference_in_proportions
-        @absolute_difference_in_proportions ||=
-          (control - minimum_detectable_treatment).abs
-      end
+        def absolute_difference_in_proportions
+          @absolute_difference_in_proportions ||=
+            (control - minimum_detectable_treatment).abs
+        end
 
-      def minimum_detectable_treatment
-        @minimum_detectable_treatment ||=
-          control + minimum_detectable_effect
-      end
+        def minimum_detectable_treatment
+          @minimum_detectable_treatment ||=
+            control + minimum_detectable_effect
+        end
     end
   end
 end

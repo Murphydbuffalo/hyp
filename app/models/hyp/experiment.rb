@@ -27,12 +27,12 @@ module Hyp
 
       private
 
-      # Override definition in `ExperimentHelpers::Methods` to use Mongoid's
-      # `desc` instead of ActiveRecord's `order`
-      def variant_for(user)
-        user_assigner = UserAssignment.new(user: user, experiment: self)
-        variants.desc(:id)[user_assigner.variant_index]
-      end
+        # Override definition in `ExperimentHelpers::Methods` to use Mongoid's
+        # `desc` instead of ActiveRecord's `order`
+        def variant_for(user)
+          user_assigner = UserAssignment.new(user: user, experiment: self)
+          variants.desc(:id)[user_assigner.variant_index]
+        end
     end
   end
 end

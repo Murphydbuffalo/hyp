@@ -19,38 +19,38 @@ module Hyp
 
       private
 
-      def active_record_create(params)
-        experiment = Hyp::Experiment.new(params)
+        def active_record_create(params)
+          experiment = Hyp::Experiment.new(params)
 
-        ActiveRecord::Base.transaction do
+          ActiveRecord::Base.transaction do
+            if experiment.save
+              experiment.variants.create(variants_params)
+            end
+          end
+
+          experiment
+        end
+
+        def mongoid_create(params)
+          experiment = Hyp::Experiment.new(params)
+
           if experiment.save
             experiment.variants.create(variants_params)
           end
+
+          experiment
         end
 
-        experiment
-      end
-
-      def mongoid_create(params)
-        experiment = Hyp::Experiment.new(params)
-
-        if experiment.save
-          experiment.variants.create(variants_params)
+        def variants_params
+          [
+            {
+              name: 'Control'
+            },
+            {
+              name: 'Treatment'
+            }
+          ]
         end
-
-        experiment
-      end
-
-      def variants_params
-        [
-          {
-            name: 'Control'
-          },
-          {
-            name: 'Treatment'
-          }
-        ]
-      end
     end
   end
 end

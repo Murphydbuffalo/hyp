@@ -15,15 +15,15 @@ module Hyp
 
     private
 
-    attr_reader :user, :experiment
+      attr_reader :user, :experiment
 
-    def user_experiment_hash
-      @user_experiment_hash ||=
-        Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
-    end
+      def user_experiment_hash
+        @user_experiment_hash ||=
+          Digest::SHA256.hexdigest(user.id.to_s + experiment.id.to_s)
+      end
 
-    def num_variants
-      experiment.variants.count
-    end
+      def num_variants
+        experiment.variants.count
+      end
   end
 end
