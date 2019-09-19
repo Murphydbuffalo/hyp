@@ -10,32 +10,18 @@ content, algorithms, server-rendered pages, or anything else you like.
 Both ActiveRecord- and Mongoid-backed applications are supported.
 
 ## Table of Contents
-1. [Basic Usage](#basic-usage)
-2. [Installation and Configuration](#installation-and-configuration)
+1. [Basic usage](#basic-usage)
+2. [Installation and configuration](#installation-and-configuration)
 3. [Get notified upon completion of an experiment](#get-notified-upon-completion-of-an-experiment)
 4. [Authorization](#authorization)
-5. [Methodology](#methodology)
-6. [API](#api)
-7. [Testing](#testing)
-8. [Contributing](#contributing)
-9. [License](#license)
+5. [Creating experiments and calculating sample sizes](#creating-experiments-and-calculating-sample-sizes)
+6. [Methodology](#methodology)
+7. [API](#api)
+8. [Testing](#testing)
+9. [Contributing](#contributing)
+10. [License](#license)
 
-## Basic Usage
-Hyp requires two things from your application to start running experiments:
-1. Unique identifiers for the users in your application.
-2. An existing conversion rate for the feature you want to experiment with. This
-is needed to calculate the required sample size for the experiment (more on that
-in the [methodology](#methodology) section if you're curious). If you don't have
-data on an existing version of the feature - maybe you haven't released it yet -
-go and gather some data before running experiments on it. In practice this isn't
-a terrible experience: release a version of your feature and gather data on its
-conversion rate until you have several hundred examples. Now you're ready to go
-with a reasonable baseline of how the feature performs AND you've had time to
-work out any major kinks in the release before you start experimenting with
-different versions of it.
-
-Given those things you're ready to run some experiments!
-
+## Basic usage
 Conditionally execute code based on the experiment variant a user belongs to:
 ```ruby
 experiment  = Hyp::Experiment.find_by(name: 'My very first experiment')
@@ -49,9 +35,8 @@ end
 ```
 
 User assignments are consistent, so a given user will always belong to the same
-variant for a given experiment. The assignments are based on a SHA256 hash
-of both the user's and experiment's `#id`. *This means that your user entities
-must provide a unique identifier.*
+variant for a given experiment. The assignments are based on a SHA256 hash of
+both the user's and experiment's `#id`.
 
 Record user trials and conversions via Ruby:
 ```ruby
@@ -61,10 +46,10 @@ experiment.record_trial(user)
 
 # Eg, when user takes the action you're interested in
 experiment.record_conversion(user)
-
-# Or, all in one go
-experiment.record_trial_and_conversion(user)
 ```
+
+Calling `#record_conversion` will create a trial for that user if one doesn't already exist. There is a unique database constraint limiting users to a single
+trial per experiment.
 
 Or via JavaScript:
 ```javascript
@@ -76,9 +61,12 @@ $.post(
 ```
 
 Visit the `/hyp/experiments` page to CRUD your experiments:
+TODO add screenshot of index page
+TODO add screenshot of form
 
 Click on a particular experiment to see how far along it is, and what conclusions
 can be drawn from it (if any):
+TODO add screenshot of in-progress experiment
 
 ## Installation and Configuration
 Add this line to your application's Gemfile:
@@ -104,16 +92,16 @@ This will:
 
 `hyp:install` takes two optional flags: `--db-interface`, and `--user-class`.
 
-`--db-interface` tells Hyp which ORM/ODM your application uses. It can be either `active_record` or `mongoid`. It defaults to `active_record` if not present.
-
-In Hyp we associate each trial with a particular user using a "has and belongs
-to many" relationships between the user and experiment. The `--user-class` option tells Hyp what class you'd like to use as the "user" in your experiments.
-It can be any string that can be `#constantize`'d to a valid class from your application code. It defaults to `'User'` if not present.
+`--db-interface` tells Hyp which ORM/ODM your application uses. It can be either `active_record` or `mongoid`. It defaults to `active_record`.
 
 If you add `--db-interface mongoid` the generator will:
 + Add `Hyp.db_interface = :mongoid` to `config/initializers/hyp.rb`.
 + Not add the aforementioned migrations.
 + Create models that know how to talk to Mongoid. Hooray!
+
+In Hyp we associate each trial with a particular user using a "has and belongs
+to many" relationships between the user and experiment. The `--user-class` option tells Hyp what class you'd like to use as the "user" in your experiments.
+It can be any string that can be `#constantize`'d to a valid class from your application code. It defaults to `'User'` if not present.
 
 If you add `--user-class 'MyClass'` the generator will add
 `Hyp.user_class_name = 'MyClass'` to `config/initializers/hyp.rb`.
@@ -124,10 +112,9 @@ you may want to kick off a background job that will send you an email when an
 experiment finds a significant result.
 
 To set this up open `config/initializers/hyp.rb` and set
-`Hyp.experiment_complete_callback` to an object that responds to `#call` (such
-  as a lambda) and expects a single argument. Eg:
+`Hyp.experiment_complete_callback` to an object that responds to `#call`, such
+as a lambda. Hyp will pass the ID of the `Hyp::Experiment` when it invokes `#call`.
 
-For example:
 ```ruby
 Hyp.experiment_complete_callback = ->(experiment_id) {
   experiment = Hyp::Experiment.find(experiment_id)
@@ -156,27 +143,7 @@ deviations it is from the mean of a normal distribution.
 This standard deviation calculation relies on the size of the sample the
 proportions are calculated for, and we determine this sample size prior to the
 running the experiment based the values of alpha, statistical power, minimum
-detectable effect, and the control proportion you have selected for it.
-
-This sample size is the smallest sample size required *for each variant* so that
-you will have your specified level of power given your level alpha, your control
-proportion, and an effect size at least as big as your MDE.
-
-Let's look at each of the parameters used to the sample size calculation in more depth:
-+ Alpha - Required to be one of two conventional values: 0.05 or 0.01. This is
-the probability of a false positive, also known as the significance level.
-+ Power - Required to be one of two conventional values: 0.80 or 0.90. This is
-the probability of detecting a positive result (rejecting the null hypothesis) if
-one is present. Higher power means a lower probability of false negatives (not
-rejecting the null hypothesis when it is false).
-+ Control proportion - You must have existing data on the conversion rate of the
-current variant of the feature. This is the control proportion.
-+ Minimum detectable effect - The smallest effect size you would care to detect.
-We don't want to run an experiment only to find out that our effect size, although
-statistically significant, is not large enough to deliver business value.
-
-For a more in-depth discussion of these parameters and sample size calculations
-check out [my blog post on the subject](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab).
+detectable effect, and the control proportion you have selected for it. See [Creating experiments and calculating sample sizes](#creating-experiments-and-calculating-sample-sizes) for more details.
 
 Using our z-score we then calculate a p-value, or the probability of an effect
 size at least as large as ours occurring by random chance given that the null
@@ -204,7 +171,57 @@ no statistically significant difference between the two variants simply because
 you prefer the code quality or esthetic quality of one variant as the Signal v.
 Noise blog points out in [an excellent post on the topic](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size).
 
+## Creating experiments and calculating sample sizes
+_Beware! We talk about statistics below. If you'd rather just use Hyp and not get a refresher math course feel free to skip this section. If you want to be confident that Hyp works properly or are simply curious to learn more, please continue :)._
+
+When you create an experiment Hyp will calculate the necessary sample size for your experiment, and if you're not already intimately familiar with statistics this warrants some explanation. Why do we need to know our sample size ahead of time? Can't we just run the experiment until a significant result is found? The answer, sadly, is no.
+
+Check out Evan Miller's excellent blog post [How not to run an A/B test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) to get a sense of why this is.
+
+In short, if you run your test until you find a significant result you're gaming the system and tricking yourself into thinking your results are statistically valid when they may not be. Specifically, you could find a significant result
+after 500 trials and stop the experiment, not realizing that after 1000 trials the result would not have been significant.
+
+On the other hand, you can also run your experiment for too long and get *too large of a sample size*. The larger your sample the smaller its standard deviation will be, and we determine statistical significance by measuring how many standard deviations from the mean a result is. Therefore, with a large enough sample size *any* result will be found statistically significant by virtue of the standard deviation being very small. This can mean running an experiment only to find a
+significant result that you don't care about, maybe a 0.00001% increase in some
+metric.
+
+What we want is a sample size that will effectively find us significant results that we actually care about. For a more in-depth discussion of these concepts
+check out my blog post on the subject: [Why do I need such a large sample size for my A/B test?](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab).
+
+To create an experiment you are asked to provide four values:
++ Alpha (also known as the significance level)
++ Statistical power
++ The control conversion rate
++ The minimum detectable effect
+
+What are all of these things and why do you need to provide them in order to run
+calculate the sample size?
+
++ Alpha - Required to be one of two conventional values: 0.05 or 0.01. This is
+the probability of a false positive, also known as the significance level. Changing this parameter involves a trade off: a lower alpha means a lower risk of false positives but a higher risk of false negatives because the criteria for a result beings significant is more stringent.
++ Statistical power - Required to be one of two conventional values: 0.80 or 0.90. This is the probability of detecting a positive result (rejecting the null hypothesis) if one is present. Higher power means a lower probability of false negatives (not rejecting the null hypothesis when it is false).
++ Control conversion rate - You must have existing data or a reasonable estimate of the conversion rate of the current variant of the feature. If you don't have
+data on an existing version of the feature - maybe you haven't released it yet -
+go and gather some data before running experiments on it. In practice this isn't
+a terrible experience. Release a version of your feature and gather data on its
+conversion rate until you have a few hundred examples. Now you're ready to go
+with a reasonable estimate of the feature's conversion rate AND you've had time
+to work out any major kinks in the release before you start experimenting with
+different versions of it. The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
++ Minimum detectable effect (MDE) - The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. When your experiment runs we will not count as significant any effects smaller than this level. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will give you your specified level of power for the calculated sample size, given your levels of alpha and the control conversion rate.
+
+The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
+
+I like to think of it as having various levers to pull and tradeoffs to make. If you want higher alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size.
+If there is a ton of variability in your control variant's probability distribution you'll need a higher sample size.
+
+But conversely, if you only care about very large effect sizes, or if you don't need a very high level of power, or a very low level of alpha, then you can get away with a smaller sample size.
+
 ## API
+### `Hyp::ExperimentRepo`
+CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rather than directly querying for or creating a `Hyp::Experiment`. The repo handles things like eager loading, and being able to talk to both ActiveRecord and Mongoid.
+#### Instance methods
+
 ### `Hyp::Experiment`
 #### Associations
 + `has_many` `Hyp::Variant`s, an experiment will always have two variants.
