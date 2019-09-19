@@ -16,7 +16,7 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 4. [Authorization](#authorization)
 5. [Methodology](#methodology)
 6. [Creating experiments and calculating sample sizes](#creating-experiments-and-calculating-sample-sizes)
-7. [API](#api)
+7. [Documentation](#documentation)
 8. [Testing](#testing)
 9. [Contributing](#contributing)
 10. [License](#license)
@@ -220,7 +220,7 @@ I like to think of it as having various levers to pull and tradeoffs to make. If
 
 But conversely, if you only care about very large effect sizes, or if you don't need a high level of power, or a low level of alpha, then you can get away with a smaller sample size.
 
-## API
+## Documentation
 ### `Hyp::ExperimentRepo`
 CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rather than directly querying for or creating a `Hyp::Experiment`. The repo handles things like eager loading, and being able to talk to both ActiveRecord and Mongoid.
 #### Instance methods
