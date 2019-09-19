@@ -35,29 +35,25 @@ module Hyp
       end
 
       def winner
-        return nil unless finished? && significant_result_found?
+        return nil unless finished? && significant_result? && effect_size_sufficient?
 
-        if control_conversion_rate >= treatment_conversion_rate
+        if control_conversion_rate > treatment_conversion_rate
           control_variant
-        else
+        elsif control_conversion_rate < treatment_conversion_rate
           treatment_variant
+        else
+          raise InvalidExperimentResultError, 'significant result found but control and treatment conversion rates are the same.'
         end
       end
 
       def loser
-        return nil unless finished? && significant_result_found?
-
-        if control_conversion_rate < treatment_conversion_rate
-          control_variant
-        else
-          treatment_variant
-        end
+        winner && variants.detect { |v| v != winner }
       end
 
-      def percent_finished
-        @percent_finished ||= (variants.sum do |variant|
-          num_trials(variant)
-        end / (sample_size * variants.count).to_f * 100).round(2)
+      def progress
+        @progress ||= (
+          variants.sum { |v| num_trials(v) } / (sample_size * variants.count.to_f)
+        ).round(2)
       end
 
       def control_conversion_rate
@@ -66,14 +62,6 @@ module Hyp
 
       def treatment_conversion_rate
         @treatment_conversion_rate ||= conversion_rate(treatment_variant)
-      end
-
-      def effect_size
-        hypothesis_test.effect_size
-      end
-
-      def significant_result_found?
-        hypothesis_test.result == :reject_null
       end
 
       def record_trial(user)
@@ -98,16 +86,24 @@ module Hyp
         variants.order(:id)[user_assigner.variant_index]
       end
 
+      def effect_size
+        hypothesis_test.effect_size
+      end
+
+      def significant_result?
+        hypothesis_test.significant_result?
+      end
+
       private
 
         def conversion_rate(variant)
           number_of_trials = num_trials(variant)
 
-          (if number_of_trials.zero?
+          if number_of_trials.zero?
             0.0
           else
             variant.experiment_user_trials.where(converted: true).count / variant.experiment_user_trials.count.to_f
-          end * 100).round(2)
+          end
         end
 
         def hypothesis_test
@@ -141,6 +137,10 @@ module Hyp
 
         def treatment_trials
           ExperimentUserTrial.where(experiment: self, variant: treatment_variant)
+        end
+
+        def effect_size_sufficient?
+          effect_size >= minimum_detectable_effect
         end
     end
   end

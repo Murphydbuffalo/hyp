@@ -94,7 +94,7 @@ describe Hyp::Experiment do
       context 'no significant result was found' do
         before do
           allow(subject).to receive(:finished?) { true }
-          allow(subject).to receive(:significant_result_found?) { false }
+          allow(subject).to receive(:significant_result?) { false }
         end
 
         it 'returns nil' do
@@ -105,16 +105,13 @@ describe Hyp::Experiment do
       context 'one variant is significantly better than the other' do
         before do
           allow(subject).to receive(:finished?) { true }
-          allow(subject).to receive(:significant_result_found?) { true }
+          allow(subject).to receive(:significant_result?) { true }
 
           allow(subject).to receive(:variant_for).with(idiot1) { subject.control_variant }
           allow(subject).to receive(:variant_for).with(idiot2) { subject.treatment_variant }
 
-          subject.record_conversion(idiot1)
-          subject.record_conversion(idiot1)
-          subject.record_conversion(idiot1)
-
-          subject.record_conversion(idiot2)
+          subject.record_conversion(idiot1) # 100% conversion rate
+          subject.record_trial(idiot2) # 0% conversion rate
         end
 
         it 'returns the winning variant' do
@@ -137,7 +134,7 @@ describe Hyp::Experiment do
       context 'no significant result was found' do
         before do
           allow(subject).to receive(:finished?) { true }
-          allow(subject).to receive(:significant_result_found?) { false }
+          allow(subject).to receive(:significant_result?) { false }
         end
 
         it 'returns nil' do
@@ -148,16 +145,13 @@ describe Hyp::Experiment do
       context 'one variant is significantly better than the other' do
         before do
           allow(subject).to receive(:finished?) { true }
-          allow(subject).to receive(:significant_result_found?) { true }
+          allow(subject).to receive(:significant_result?) { true }
 
           allow(subject).to receive(:variant_for).with(idiot1) { subject.control_variant }
           allow(subject).to receive(:variant_for).with(idiot2) { subject.treatment_variant }
 
-          subject.record_conversion(idiot1)
-          subject.record_conversion(idiot1)
-          subject.record_conversion(idiot1)
-
-          subject.record_conversion(idiot2)
+          subject.record_conversion(idiot1) # 100% conversion rate
+          subject.record_trial(idiot2) # 0% conversion rate
         end
 
         it 'returns the losing variant' do
@@ -166,10 +160,10 @@ describe Hyp::Experiment do
       end
     end
 
-    describe '#percent_finished' do
+    describe '#progress' do
       context 'no trials' do
         it 'returns 0.0' do
-          expect(subject.percent_finished).to be 0.0
+          expect(subject.progress).to be 0.0
         end
       end
 
@@ -183,7 +177,7 @@ describe Hyp::Experiment do
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.percent_finished).to be 1.05
+          expect(subject.progress).to be 0.01
         end
       end
     end
@@ -213,7 +207,7 @@ describe Hyp::Experiment do
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.control_conversion_rate).to be 50.0
+          expect(subject.control_conversion_rate).to be 0.5
         end
       end
     end
@@ -243,7 +237,7 @@ describe Hyp::Experiment do
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.treatment_conversion_rate).to be 70.0
+          expect(subject.treatment_conversion_rate).to be 0.7
         end
       end
     end

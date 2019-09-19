@@ -247,8 +247,6 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#updated_at` - Timestamp
 
 #### Instance methods
-+ `#percent_finished` - What percentage of the required sample size (for all
-variants) has been met?
 + `#control_conversion_rate` - The percentage of users who have been exposed to
 the control variant that have converted.
 + `#control_variant` - the control instance of `Hyp::Variant` for this experiment.
@@ -256,10 +254,11 @@ the control variant that have converted.
 + `#finished?` - Has the experiment recorded `#sample_size` trials for each variant? Finished experiments cannot have any more trials or conversions
 recorded.
 + `#loser` - Returns `nil` if the experiment is not `finished?` or if no significant result was found. Otherwise returns the losing variant.
++ `#progress` - What fraction of the required sample size (for all variants) has been met? A float from 0.0 to 1.0.
 + `#record_conversion(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database) with the `converted` field set to `true`.
 + `#record_trial(user)` - Finds or creates a trial for the user and experiment (represented as an `ExperimentUserTrial` in the database).
 + `#sample_size` - The number of trials *per variant* required to reach statistical significance for the experiment's `#power` and `#minimum_detectable_effect`. A positive integer.
-+ `#significant_result_found?` - Is the result statistically significant?
++ `#significant_result?` - Is the result statistically significant?
 + `#started?` - Have any trials been recorded for the experiment? Experiments that have started cannot be edited.
 + `#treatment_conversion_rate` - The percentage of users who have been exposed to
 the treatment variant that have converted.

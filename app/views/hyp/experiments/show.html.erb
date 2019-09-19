@@ -29,7 +29,7 @@
         </p>
 
         <div class='progress-bar'>
-          <div class='progress-bar-fill' style="width:<%= @experiment.percent_finished %>%"></div>
+          <div class='progress-bar-fill' style="width:<%= number_to_percentage(@experiment.progress) %>"></div>
         </div>
       </section>
 
@@ -37,11 +37,11 @@
         <h3>Conversion Rates</h3>
 
         <p>
-          <strong>Control:</strong> <%= "#{@experiment.control_conversion_rate}%" %>
+          <strong>Control:</strong> <%= "#{number_to_percentage(@experiment.control_conversion_rate)}" %>
         </p>
 
         <p>
-          <strong>Treatment:</strong> <%= "#{@experiment.treatment_conversion_rate}%" %>
+          <strong>Treatment:</strong> <%= "#{number_to_percentage(@experiment.treatment_conversion_rate)}" %>
         </p>
       </section>
     </div>
@@ -50,13 +50,13 @@
       <p>
         <% if @experiment.finished? %>
           The experiment is finished!
-          <% if @experiment.significant_result_found? %>
+          <% if @experiment.significant_result? %>
             <%= "#{@experiment.winner.name} is #{@experiment.effect_size}% more effective than #{@experiment.loser.name}"%>
           <% else %>
             No significant difference was found between the two variants.
           <% end %>
         <% else %>
-          <%= "The experiment is #{@experiment.percent_finished}% complete. No statistically significant conculsions can be made until it is complete." %>
+          <%= "The experiment is #{number_to_percentage(@experiment.progress)} complete. No statistically significant conculsions can be made until it is complete." %>
         <% end %>
       </p>
     </section>

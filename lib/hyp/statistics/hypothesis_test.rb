@@ -26,6 +26,14 @@ module Hyp
         end
       end
 
+      def effect_size
+        @effect_size ||= (treatment - control).abs
+      end
+
+      def significant_result?
+        result == :reject_null
+      end
+
       private
 
         attr_reader :control, :treatment, :sample_size, :alpha
@@ -40,10 +48,6 @@ module Hyp
         def test_statistic
           return 0.0 if standard_deviation.zero?
           effect_size / standard_deviation
-        end
-
-        def effect_size
-          @effect_size ||= (treatment - control).abs
         end
 
         # The variance of the difference between two random variables is the sum
