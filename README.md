@@ -317,7 +317,7 @@ To. run the dummy app you need to:
 7. `rails s`
 
 ## Contributing
-Contributions are most welcome, but remember: You're required to be nice to others! It's the law!
+Do it!
 
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
