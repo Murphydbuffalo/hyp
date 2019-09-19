@@ -24,7 +24,7 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 ## Basic usage
 Conditionally execute code based on the experiment variant a user belongs to:
 ```ruby
-experiment  = Hyp::Experiment.find_by(name: 'My very first experiment')
+experiment  = Hyp::ExperimentRepo.find_by(name: 'My very first experiment')
 variant = experiment.variant_for(user)
 
 if variant.control?
@@ -41,7 +41,7 @@ both the user's and experiment's `#id`s.
 Record user trials and conversions via Ruby:
 ```ruby
 # Eg, when user visits a page
-experiment = Hyp::Experiment.find_by(name: 'My very first experiment')
+experiment = Hyp::ExperimentRepo.find_by(name: 'My very first experiment')
 experiment.record_trial(user)
 
 # Eg, when user takes the action you're interested in
@@ -117,7 +117,7 @@ as a lambda. Hyp will pass the ID of the `Hyp::Experiment` when it invokes `#cal
 
 ```ruby
 Hyp.experiment_complete_callback = ->(experiment_id) {
-  experiment = Hyp::Experiment.find(experiment_id)
+  experiment = Hyp::ExperimentRepo.find(experiment_id)
   puts experiment.winner.name
 }
 ```
@@ -216,15 +216,18 @@ The smallest effect size you would care to detect. We don't want to run an exper
 
 The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
 
-I like to think of it as having various levers to pull and tradeoffs to make. If you want lower alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size.
-If there is a ton of variability in your control variant's probability distribution you'll need a higher sample size.
+I like to think of it as having various levers to pull and tradeoffs to make. If you want lower alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size. If there is a ton of variability in your control variant's probability distribution you'll need a higher sample size.
 
-But conversely, if you only care about very large effect sizes, or if you don't need a very high level of power, or a very low level of alpha, then you can get away with a smaller sample size.
+But conversely, if you only care about very large effect sizes, or if you don't need a high level of power, or a low level of alpha, then you can get away with a smaller sample size.
 
 ## API
 ### `Hyp::ExperimentRepo`
 CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rather than directly querying for or creating a `Hyp::Experiment`. The repo handles things like eager loading, and being able to talk to both ActiveRecord and Mongoid.
 #### Instance methods
++ `#list(offset: 0, limit: 25)` - List experiments with their variants eager loaded.
++ `#find(id)` - Retrieve an experiment by ID with its variants eager loaded.
++ `#find_by(hash)` - Retrieve an experiment by a hash with its variants eager loaded.
++ `#create(hash)` - Create an experiment, including control and treatment variants.
 
 ### `Hyp::Experiment`
 #### Associations
