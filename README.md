@@ -36,7 +36,7 @@ end
 
 User assignments are consistent, so a given user will always belong to the same
 variant for a given experiment. The assignments are based on a SHA256 hash of
-both the user's and experiment's `#id`.
+both the user's and experiment's `#id`s.
 
 Record user trials and conversions via Ruby:
 ```ruby
@@ -132,8 +132,8 @@ feature and the proportion of users who converted on the treatment (new,
 experimental) variant of a feature.
 
 Our hypotheses are as follows:
-Null hypothesis,      h0: (control - treatment)  = 0
-Alternate hypothesis, hA: (control - treatment) != 0
++ Null hypothesis,      h0: (control - treatment)  = 0
++ Alternate hypothesis, hA: (control - treatment) != 0
 
 The effect size of the test is the difference between those two proportions.
 
@@ -181,8 +181,7 @@ Check out Evan Miller's excellent blog post [How not to run an A/B test](https:/
 In short, if you run your test until you find a significant result you're gaming the system and tricking yourself into thinking your results are statistically valid when they may not be. Specifically, you could find a significant result
 after 500 trials and stop the experiment, not realizing that after 1000 trials the result would not have been significant.
 
-On the other hand, you can also run your experiment for too long and get *too large of a sample size*. The larger your sample the smaller its standard deviation will be, and we determine statistical significance by measuring how many standard deviations from the mean a result is. Therefore, with a large enough sample size *any* result will be found statistically significant by virtue of the standard deviation being very small. This can mean running an experiment only to find a
-significant result that you don't care about, maybe a 0.00001% increase in some
+On the other hand, you can also run your experiment for too long and get *too large of a sample size*. The larger your sample the smaller its standard deviation will be, and we determine statistical significance by measuring how many standard deviations from the mean a result is. Therefore, with a large enough sample size *any* result will be found statistically significant by virtue of the standard deviation being very small. This can mean running an experiment only to find a significant result that you don't care about, maybe a 0.00001% increase in some
 metric.
 
 What we want is a sample size that will effectively find us significant results that we actually care about. For a more in-depth discussion of these concepts
@@ -194,25 +193,30 @@ To create an experiment you are asked to provide four values:
 + The control conversion rate
 + The minimum detectable effect
 
-What are all of these things and why do you need to provide them in order to run
+What are all of these things and why do you need to provide them in order to
 calculate the sample size?
 
-+ Alpha - Required to be one of two conventional values: 0.05 or 0.01. This is
-the probability of a false positive, also known as the significance level. Changing this parameter involves a trade off: a lower alpha means a lower risk of false positives but a higher risk of false negatives because the criteria for a result beings significant is more stringent.
-+ Statistical power - Required to be one of two conventional values: 0.80 or 0.90. This is the probability of detecting a positive result (rejecting the null hypothesis) if one is present. Higher power means a lower probability of false negatives (not rejecting the null hypothesis when it is false).
-+ Control conversion rate - You must have existing data or a reasonable estimate of the conversion rate of the current variant of the feature. If you don't have
-data on an existing version of the feature - maybe you haven't released it yet -
-go and gather some data before running experiments on it. In practice this isn't
-a terrible experience. Release a version of your feature and gather data on its
-conversion rate until you have a few hundred examples. Now you're ready to go
-with a reasonable estimate of the feature's conversion rate AND you've had time
-to work out any major kinks in the release before you start experimenting with
-different versions of it. The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
-+ Minimum detectable effect (MDE) - The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. When your experiment runs we will not count as significant any effects smaller than this level. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will give you your specified level of power for the calculated sample size, given your levels of alpha and the control conversion rate.
+### Alpha
+This is the probability of a false positive, also known as the significance level. Changing this parameter involves a trade off: a lower alpha means a lower risk of false positives but a higher risk of false negatives because the criteria for a result being significant is more stringent.
+Alpha is required to be one of two conventional values: 0.05 or 0.01.
+
+### Statistical power
+This is the probability of detecting a positive result (rejecting the null hypothesis) if one is present. Higher power means a lower probability of false negatives (not rejecting the null hypothesis when it is false). Larger sample sizes allow you to have higher levels of power.
+Power is required to be one of two conventional values: 0.80 or 0.90.
+
+### Control conversion rate
+You must have existing data for or a reasonable estimate  conversion of the rate of the current variant of the feature. If you don't have data on an existing version of the feature - maybe you haven't released it yet - go and gather some data before running experiments on it.
+
+In practice this isn't a terrible experience. Release a version of your feature and gather data on its conversion rate until you have a few hundred examples. Now you're ready to go with a reasonable estimate of the feature's conversion rate AND you've had time to work out any major kinks in the release before you start experimenting with different versions of it.
+
+The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
+
+### Minimum detectable effect (MDE)
+The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. When your experiment runs we will not count as significant any effects smaller than this level. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will give you your specified level of power for the calculated sample size, given your levels of alpha and the control conversion rate.
 
 The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
 
-I like to think of it as having various levers to pull and tradeoffs to make. If you want higher alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size.
+I like to think of it as having various levers to pull and tradeoffs to make. If you want lower alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size.
 If there is a ton of variability in your control variant's probability distribution you'll need a higher sample size.
 
 But conversely, if you only care about very large effect sizes, or if you don't need a very high level of power, or a very low level of alpha, then you can get away with a smaller sample size.
