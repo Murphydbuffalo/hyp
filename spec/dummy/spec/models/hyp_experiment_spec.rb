@@ -102,6 +102,18 @@ describe Hyp::Experiment do
         end
       end
 
+      context 'the effect size is smaller than the MDE' do
+        before do
+          allow(subject).to receive(:finished?) { true }
+          allow(subject).to receive(:significant_result?) { true }
+          allow(subject).to receive(:effect_size) { 0.04 }
+        end
+
+        it 'returns nil' do
+          expect(subject.winner).to be nil
+        end
+      end
+
       context 'one variant is significantly better than the other' do
         before do
           allow(subject).to receive(:finished?) { true }
