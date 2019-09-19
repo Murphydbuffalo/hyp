@@ -4,6 +4,8 @@ require_dependency "hyp/application_controller"
 
 module Hyp
   class SampleSizesController < ApplicationController
+    include ActionView::Helpers::NumberHelper
+
     def show
       @experiment = Hyp::Experiment.new(
         alpha:                     params[:alpha],
@@ -15,9 +17,9 @@ module Hyp
       respond_to do |format|
         format.json do
           if @experiment.sample_size
-            render json: @experiment.sample_size, status: 200
+            render json: { result: number_with_delimiter(@experiment.sample_size) }, status: 200
           else
-            render json: 'Please specify alpha, power, control, and MDE.', status: 400
+            render json: { result: 'Please specify alpha, power, control, and MDE.' }, status: 400
           end
         end
       end

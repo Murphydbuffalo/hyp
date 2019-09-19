@@ -27,7 +27,7 @@
   </div>
 
   <div class="field control">
-    <%= form.label :control %>
+    <%= form.label :control, 'Control conversion rate' %>
     <%= form.text_field :control %>
   </div>
 
@@ -44,7 +44,7 @@
 <section class='sample-size-preview'>
   <p>
     <% sample_size = @experiment.persisted? ? @experiment.sample_size : 'N/A' %>
-    <strong>Required sample size per variant:</strong> <span class='sample-size'><%= sample_size %></span>
+    <strong>Required sample size per variant:</strong> <span class='sample-size'><%= number_with_delimiter(sample_size) %></span>
   </p>
 
   <p>
@@ -57,9 +57,11 @@
   </p>
 
   <p>
-    <a target='_blank' href='https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab'>
-      Learn more about sample size calculations.
-    </a>
+    <strong>
+      <a target='_blank' href='https://github.com/murphydbuffalo/hyp#creating-experiments-and-calculating-sample-sizes'>
+        Learn more about sample size calculations.
+      </a>
+    </strong>
   </p>
 </section>
 
@@ -83,7 +85,7 @@
             minimum_detectable_effect: parseFloat(minimum_detectable_effect)
           },
           function(data, status, _xhr) {
-            $('.sample-size').text(data);
+            $('.sample-size').text(data.result);
           }
         );
       }
