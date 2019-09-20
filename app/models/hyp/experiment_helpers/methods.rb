@@ -41,8 +41,6 @@ module Hyp
           control_variant
         elsif control_conversion_rate < treatment_conversion_rate
           treatment_variant
-        else
-          raise InvalidExperimentResultError, 'significant result found but control and treatment conversion rates are the same.'
         end
       end
 
