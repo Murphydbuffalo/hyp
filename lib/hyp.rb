@@ -2,6 +2,7 @@
 
 require 'hyp/engine'
 require 'hyp/experiment_repo'
+require 'hyp/query_param'
 
 module Hyp
   mattr_writer :db_interface, :user_class_name

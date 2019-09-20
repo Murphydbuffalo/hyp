@@ -94,7 +94,23 @@ module Hyp
         hypothesis_test.significant_result?
       end
 
+      def conversion_query_param(user)
+        query_param(user, 'conversion')
+      end
+
+      def trial_query_param(user)
+        query_param(user, 'trial')
+      end
+
       private
+
+        def query_param(user, event_type)
+          QueryParam.new(
+            experiment: self,
+            user:       user,
+            event_type: event_type
+          ).to_s
+        end
 
         def conversion_rate(variant)
           number_of_trials = num_trials(variant)
