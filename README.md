@@ -224,11 +224,11 @@ But conversely, if you only care about very large effect sizes, or if you don't 
 ## Documentation
 ### `Hyp::ExperimentRepo`
 CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rather than directly querying for or creating a `Hyp::Experiment`. The repo handles things like eager loading, and being able to talk to both ActiveRecord and Mongoid.
-#### Instance methods
-+ `#list(offset: 0, limit: 25)` - List experiments with their variants eager loaded.
-+ `#find(id)` - Retrieve an experiment by ID with its variants eager loaded.
-+ `#find_by(hash)` - Retrieve an experiment by a hash with its variants eager loaded.
-+ `#create(hash)` - Create an experiment, including control and treatment variants.
+#### Class methods
++ `.list(offset: 0, limit: 25)` - List experiments with their variants eager loaded.
++ `.find(id)` - Retrieve an experiment by ID with its variants eager loaded.
++ `.find_by(hash)` - Retrieve an experiment by a hash with its variants eager loaded.
++ `.create(hash)` - Create an experiment, including control and treatment variants.
 
 ### `Hyp::Experiment`
 #### Associations
