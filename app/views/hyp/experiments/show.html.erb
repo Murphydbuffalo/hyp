@@ -25,7 +25,7 @@
         <h3>Experiment Progress</h3>
 
         <p>
-          <strong>Required sample size per variant:</strong> <%= @experiment.sample_size %>
+          <strong>Required sample size per variant:</strong> <%= number_with_delimiter(@experiment.sample_size) %>
         </p>
 
         <div class='progress-bar'>
