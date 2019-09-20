@@ -1,6 +1,5 @@
 # Hyp
-Hyp is in über ultra beta! It is not production ready. We're still working out
-the kinks. Capiche?
+Hyp (as in "hypothesis") is in beta! We're still working out the kinks. Capiche?
 
 Easily run, monitor, and understand A/B tests from your Rails app.
 
@@ -276,6 +275,7 @@ experiment. This is the smallest effect size you care about. A float between 0.0
 + `#control_conversion_rate` - The percentage of users who have been exposed to
 the control variant that have converted.
 + `#control_variant` - the control instance of `Hyp::Variant` for this experiment.
++ `#conversion_query_param(user)` - Return a Base64 encoded string for use as a `:hyp` query param on a URL. When a user visits the URL you can record a conversion by calling `Hyp::QueryParam.record_event_for(params[:hyp])`.
 + `#effect_size` - The difference between the control and treatment conversion rates. A float.
 + `#finished?` - Has the experiment recorded `#sample_size` trials for each variant? Finished experiments cannot have any more trials or conversions
 recorded.
@@ -289,6 +289,7 @@ recorded.
 + `#treatment_conversion_rate` - The percentage of users who have been exposed to
 the treatment variant that have converted.
 + `#treatment_variant` - the treatment instance of `Hyp::Variant` for this experiment.
++ `#trial_query_param(user)` - Return a Base64 encoded string for use as a `:hyp` query param on a URL. When a user visits the URL you can record a trial by calling `Hyp::QueryParam.record_event_for(params[:hyp])`.
 + `#winner` - Returns `nil` if the experiment is not `finished?`, if no significant result was found, or if the `#effect_size` is lower than the `#minimum_detectable_effect`. Otherwise returns the winning variant.
 
 ### `Hyp::Variant`
