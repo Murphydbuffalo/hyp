@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Hyp
   class ApplicationMailer < ActionMailer::Base
-    default from: 'from@example.com'
-    layout 'mailer'
+    layout 'hyp/mailer'
+    default from: 'no-reply@hyp.works'
   end
 end

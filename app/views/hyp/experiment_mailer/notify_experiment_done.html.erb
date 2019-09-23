@@ -1,0 +1,31 @@
+<h3>
+  The <em><%= @experiment.name %></em> experiment is done.
+</h3>
+
+<% if @experiment.significant_result? %>
+  <% if @experiment.winner %>
+    <p>
+      <%= "The #{@experiment.winner.name.downcase} variant is the winner!" %>
+    </p>
+  <% else %>
+    <p>
+      A significant result was found, but the effect size of the experiment was
+      less than your specified minimum detectable effect. This means that
+      you should not consider the results of this experiment to be statistically
+      valid.
+    </p>
+  <% end %>
+<% else %>
+  <p>
+    No significant results were found.
+  </p>
+<% end %>
+<p>
+  <%= "Control conversion rate: #{@experiment.control_conversion_rate.round(2)}" %>
+<p>
+  <%= "Treatment conversion rate: #{@experiment.treatment_conversion_rate.round(2)}" %>
+</p>
+
+<p>
+  View the experiment on the <%= link_to 'Hyp dashboard', hyp.experiment_url(@experiment) %>
+</p>

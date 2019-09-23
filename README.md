@@ -132,20 +132,23 @@ If you add `--user-class 'MyClass'` the generator will add
 `Hyp.user_class_name = 'MyClass'` to `config/initializers/hyp.rb`.
 
 ## Get notified upon completion of an experiment
-Hyp lets you run arbitrary code upon completion of an experiment. For example
-you may want to kick off a background job that will send you an email when an
-experiment finds a significant result.
+Hyp provides the `Hyp::ExperimentMailer#notify_experiment_done` method to send an email summarizing the results of an experiment.
+
+Hyp also lets you run arbitrary code upon completion of an experiment via the `Hyp.experiment_complete_callback` attribute.
 
 To set this up open `config/initializers/hyp.rb` and set
 `Hyp.experiment_complete_callback` to an object that responds to `#call`, such
 as a lambda. Hyp will pass the ID of the `Hyp::Experiment` when it invokes `#call`.
 
+For example:
 ```ruby
 Hyp.experiment_complete_callback = ->(experiment_id) {
-  experiment = Hyp::ExperimentRepo.find(experiment_id)
-  puts experiment.winner.name
+  Hyp::ExperimentMailer.notify_experiment_done(experiment_id, 'dev@example.com')
+                       .deliver_later
 }
 ```
+
+In the above example we're using `#experiment_complete_callback` to send email via the `Hyp::ExperimentMailer`, but you can run whatever code you like here. `#notify_experiment_done` takes the ID of an experiment and a string representing the email address that should receive the email.
 
 ## Authorization
 Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and staging environments. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD` environment variables, which will be the credentials required to log in.
@@ -334,6 +337,10 @@ Useful for running email related experiments. Generate and parse base64 encoded 
 + `#to_s` - Returns the base64 encoded version of a string of the format `"#{experiment_id}:#{user_id}:#{event_type}"` where `event_type` is either `'conversion'` or `'trial'`.
 + `#record_event` - Record either a trial or a conversion - depending on the value of `event_type` - for the given user and experiment.
 
+### `Hyp::ExperimentMailer`
+#### Instance methods
++ `#notify_experiment_done(experiment_id, receiver_email)` - Send an email to `receiver_email` summarizing the results of an experiment. `ExperimentMailer` is an `ActionMailer` subclass so it returns an instance of `Mail::Message` which you can use to actually send email by calling `#deliver_now` or `#deliver_later` on ion it.
+
 ## Testing
 There are RSpec unit tests for code that doesn't depend on Rails in the `spec`
 directory as well as a dummy Rails application under `spec/dummy`.
@@ -351,6 +358,9 @@ To. run the dummy app you need to:
 5. `bundle install`
 6. `bundle exec rake db:migrate`
 7. `rails s`
+
+### Mailer previews
+You can preview the `#notify_experiment_done` email by starting up the dummy app and visiting the [mailer preview path](http://localhost:3000/rails/mailers/hyp/experiment_mailer/notify_experiment_done) for that email.
 
 ## Contributing
 Do it!
