@@ -233,7 +233,7 @@ This is the probability of detecting a positive result (rejecting the null hypot
 Power is required to be one of two conventional values: 0.80 or 0.90.
 
 ### Control conversion rate
-You must have existing data for or a reasonable estimate  conversion of the rate of the current variant of the feature. If you don't have data on an existing version of the feature - maybe you haven't released it yet - go and gather some data before running experiments on it.
+You must have existing data for or a reasonable estimate of the conversion rate of the current variant of the feature. If you don't have data on an existing version of the feature - maybe you haven't released it yet - go and gather some data before running experiments on it.
 
 In practice this isn't a terrible experience. Release a version of your feature and gather data on its conversion rate until you have a few hundred examples. Now you're ready to go with a reasonable estimate of the feature's conversion rate AND you've had time to work out any major kinks in the release before you start experimenting with different versions of it.
 
