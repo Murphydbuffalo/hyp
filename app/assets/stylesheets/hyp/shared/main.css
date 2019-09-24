@@ -3,11 +3,11 @@ html { height: 100%; }
 body {
   height: 100%;
   width: 100%;
-  background-color: #e8ebed;
+  background-color: var(--orange);
   color: #48545b;
-  font-size: 14px;
-  font-family: "Open Sans", "Arial", "Helvetica Neue", Helvetica, sans-serif;
-  line-height: 1.4em;
+  font-size: 16px;
+  font-family: 'Source Sans Pro', sans-serif;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -17,29 +17,17 @@ a:visited {
   text-decoration: none;
 }
 
-header {
-  background-color: #0a4773;
+.container {
   min-height: 500px;
-}
-
-#modal {
-  position: relative;
-  margin: auto;
-  top: 5em;
   background: white;
-  min-height: 500px;
-  width: 70%;
-  border-radius: 5px;
-  box-shadow: 1px 1px 4px lightgray;
-  padding: 1em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  text-align: center;
 }
 
-#modal table {
+.container table {
   margin: 0 auto;
+}
+
+.row {
+  padding: 0 2em;
 }
 
 .experiment-parameters p, .conversion-rates p {
