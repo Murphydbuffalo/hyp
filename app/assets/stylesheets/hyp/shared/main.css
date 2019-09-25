@@ -3,31 +3,45 @@ html { height: 100%; }
 body {
   height: 100%;
   width: 100%;
-  background-color: var(--orange);
-  color: #48545b;
-  font-size: 16px;
-  font-family: 'Source Sans Pro', sans-serif;
-  line-height: 1.4;
-  -webkit-font-smoothing: antialiased;
+  display: flex;
+  color: var(--blue-dark);
+  background: var(--black);
 }
 
-a:visited {
-  color: black;
-  font-weight: bold;
+.wrapper {
+  padding: 2em;
+}
+
+.wrapper {
+  flex-grow: 1;
+  margin: 10px;
+  background: white;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  padding: 1.5em 0;
+}
+
+td.name {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+a:not(.button) {
+  color: var(--orange-dark);
+  font-weight: 700;
   text-decoration: none;
 }
 
-.container {
-  min-height: 500px;
-  background: white;
-}
-
-.container table {
-  margin: 0 auto;
-}
-
-.row {
-  padding: 0 2em;
+a:not(.button):hover {
+  text-decoration: underline;
 }
 
 .experiment-parameters p, .conversion-rates p {
@@ -56,16 +70,6 @@ a:visited {
   height: 100%;
   background: #035908;
   border-radius: 6px;
-}
-
-nav {
-  position: absolute;
-  bottom: 0.5em;
-  left: 1em;
-}
-
-nav h5 {
-  display: inline-block;
 }
 
 #modal form div {

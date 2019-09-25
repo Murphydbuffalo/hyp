@@ -1,0 +1,24 @@
+nav {
+  position: relative;
+  width: 200px;
+  padding: 1em;
+  background-color: var(--black);
+}
+
+nav h1 {
+  color: white;
+  font-size: 32px;
+  font-style: italic;
+}
+
+nav a, nav a:visited {
+  color: white;
+}
+
+.nav-bottom {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 30px;
+  text-align: center;
+}
