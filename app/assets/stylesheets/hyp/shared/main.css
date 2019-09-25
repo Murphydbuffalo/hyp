@@ -21,9 +21,10 @@ body {
 
 table {
   width: 100%;
+  font-size: 14px;
 }
 
-td {
+th, td {
   padding: 1.5em 0;
 }
 
@@ -42,6 +43,11 @@ a:not(.button) {
 
 a:not(.button):hover {
   text-decoration: underline;
+}
+
+.page-controls {
+  margin-bottom: 2em;
+  font-size: 2em;
 }
 
 .experiment-parameters p, .conversion-rates p {

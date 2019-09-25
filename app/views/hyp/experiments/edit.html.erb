@@ -1,22 +1,16 @@
-<header>
-  <div id="modal">
-    <h1>Editing Experiment</h1>
-    <%= render 'form', experiment: @experiment %>
-  </div>
-</header>
-
-<nav>
-  <h5>
+<div class="wrapper">
+  <div class="page-controls">
     <a href=<%= experiments_path %>>
-      Back
+      &#8592; Back
     </a>
-  </h5>
 
-  <h5> | </h5>
+    |
 
-  <h5>
     <a href=<%= experiment_path(@experiment) %>>
       Details
     </a>
-  </h5>
-</nav>
+  </div>
+  
+  <h1>Editing Experiment</h1>
+  <%= render 'form', experiment: @experiment %>
+</div>

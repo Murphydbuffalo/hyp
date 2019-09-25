@@ -1,82 +1,76 @@
-<header>
-  <div id="modal">
-    <section class='experiment-parameters'>
-      <h1><%= @experiment.name %></h1>
+<div class="wrapper">
+  <section class="experiment-parameters">
+    <div class="page-controls">
+      <a href=<%= experiments_path %>>
+        &#8592; Back
+      </a>
 
-      <p>
-        <strong>Alpha:</strong> <%= @experiment.alpha %>
-      </p>
+      <% unless @experiment.started? %>
+      |
 
-      <p>
-        <strong>Power:</strong> <%= @experiment.power %>
-      </p>
-
-      <p>
-        <strong>Control:</strong> <%= @experiment.control.round(4) %>
-      </p>
-
-      <p>
-        <strong>Minimum detectable effect:</strong> <%= @experiment.minimum_detectable_effect.round(4) %>
-      </p>
-    </section>
-
-    <div class='horizontal-flex-wrapper'>
-      <section class='experiment-progress'>
-        <h3>Experiment Progress</h3>
-
-        <p>
-          <strong>Required sample size per variant:</strong> <%= number_with_delimiter(@experiment.sample_size) %>
-        </p>
-
-        <div class='progress-bar'>
-          <div class='progress-bar-fill' style="width:<%= number_to_percent(@experiment.progress) %>"></div>
-        </div>
-      </section>
-
-      <section class='conversion-rates'>
-        <h3>Conversion Rates</h3>
-
-        <p>
-          <strong>Control:</strong> <%= "#{number_to_percent(@experiment.control_conversion_rate)}" %>
-        </p>
-
-        <p>
-          <strong>Treatment:</strong> <%= "#{number_to_percent(@experiment.treatment_conversion_rate)}" %>
-        </p>
-      </section>
+      <a href=<%= edit_experiment_path(@experiment) %>>
+        &#9998; Edit
+      </a>
+      <% end %>
     </div>
 
-    <section class='results'>
+    <h1><%= @experiment.name %></h1>
+
+    <p>
+      <strong>Alpha:</strong> <%= @experiment.alpha %>
+    </p>
+
+    <p>
+      <strong>Power:</strong> <%= @experiment.power %>
+    </p>
+
+    <p>
+      <strong>Control:</strong> <%= @experiment.control.round(4) %>
+    </p>
+
+    <p>
+      <strong>Minimum detectable effect:</strong> <%= @experiment.minimum_detectable_effect.round(4) %>
+    </p>
+  </section>
+
+  <div class='horizontal-flex-wrapper'>
+    <section class='experiment-progress'>
+      <h3>Experiment Progress</h3>
+
       <p>
-        <% if @experiment.finished? %>
-          The experiment is finished!
-          <% if @experiment.significant_result? %>
-            <%= "#{@experiment.winner.name} is #{number_to_percent(@experiment.effect_size)} more effective than #{@experiment.loser.name}"%>
-          <% else %>
-            No significant difference was found between the two variants.
-          <% end %>
-        <% else %>
-          <%= "The experiment is #{number_to_percent(@experiment.progress)} complete. No statistically significant conculsions can be made until it is complete." %>
-        <% end %>
+        <strong>Required sample size per variant:</strong> <%= number_with_delimiter(@experiment.sample_size) %>
+      </p>
+
+      <div class='progress-bar'>
+        <div class='progress-bar-fill' style="width:<%= number_to_percent(@experiment.progress) %>"></div>
+      </div>
+    </section>
+
+    <section class='conversion-rates'>
+      <h3>Conversion Rates</h3>
+
+      <p>
+        <strong>Control:</strong> <%= "#{number_to_percent(@experiment.control_conversion_rate)}" %>
+      </p>
+
+      <p>
+        <strong>Treatment:</strong> <%= "#{number_to_percent(@experiment.treatment_conversion_rate)}" %>
       </p>
     </section>
   </div>
-</header>
 
-<nav>
-  <h5>
-    <a href=<%= experiments_path %>>
-      Back
-    </a>
-  </h5>
-
-  <% unless @experiment.started? %>
-    <h5> | </h5>
-
-    <h5>
-      <a href=<%= edit_experiment_path(@experiment) %>>
-        Edit
-      </a>
-    </h5>
-  <% end %>
-</nav>
+  <section class='results'>
+    <p>
+      <% if @experiment.finished? %>
+        The experiment is finished!
+        <% if @experiment.significant_result? %>
+          <%= "#{@experiment.winner.name} is #{number_to_percent(@experiment.effect_size)} more effective than #{@experiment.loser.name}"%>
+        <% else %>
+          No significant difference was found between the two variants.
+        <% end %>
+      <% else %>
+        <%= "The experiment is #{number_to_percent(@experiment.progress)} complete. No statistically significant conculsions can be made until it is complete." %>
+      <% end %>
+    </p>
+  </section>
+</div>
