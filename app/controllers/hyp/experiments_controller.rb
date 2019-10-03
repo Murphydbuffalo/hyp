@@ -5,8 +5,7 @@ require 'hyp/experiment_repo'
 
 module Hyp
   class ExperimentsController < ApplicationController
-    http_basic_authenticate_with name: ENV['HYP_USERNAME'], password: ENV['HYP_PASSWORD'], if: -> { Rails.env.production? || Rails.env.staging? }
-
+    before_action :http_basic_authenticate, if: :use_basic_auth
     before_action :set_experiment, only: [:show, :edit, :update, :destroy]
     before_action :redirect_to_experiment_show_if_experiment_started, only: [:edit, :update]
 
@@ -71,6 +70,16 @@ module Hyp
             notice: 'Cannot modify an experiment that has already started'
           )
         end
+      end
+
+      def http_basic_authenticate
+        authenticate_or_request_with_http_basic do |name, password|
+          name == ENV['HYP_USERNAME'] && password == ENV['HYP_PASSWORD']
+        end
+      end
+
+      def use_basic_auth
+        Rails.env.production? || Rails.env.staging? || params[:use_basic_auth]
       end
   end
 end
