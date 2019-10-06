@@ -50,12 +50,26 @@ experiment.record_conversion(user)
 Calling `#record_conversion` will create a trial for that user if one doesn't already exist. There is a unique database constraint limiting users to a single
 trial per experiment.
 
-Or via JavaScript:
+Record a trial via JavaScript:
 ```javascript
 $.post(
   '/hyp/experiment_user_trials',
   { experiment_name: 'My Very First Experiment', user_identifier: 1 },
-  function(data, status, _xhr) { console.log("Status: %s\nData: %s", status, data); }
+  function(data, status, _xhr) {
+    console.log("Status: %s\nData: %s", status, data);
+  }
+);
+```
+
+Record a conversion via JavaScript:
+```javascript
+$.ajax(
+  url: '/hyp/experiment_user_trials/convert',
+  type: 'PATCH',
+  data: { experiment_name: 'My Very First Experiment', user_identifier: 1 },
+  success: function(data, status, _xhr) {
+    console.log("Status: %s\nData: %s", status, data);
+  }
 );
 ```
 
