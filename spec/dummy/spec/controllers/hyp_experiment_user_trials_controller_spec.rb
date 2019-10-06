@@ -19,7 +19,7 @@ describe Hyp::ExperimentUserTrialsController, controller: true do
     Idiot.create!(name: 'Dan', age: 29)
   end
 
-  describe 'POST #create via AJAX' do
+  describe 'POST #create' do
     it 'creates a unique `ExperimentUserTrial` for the user' do
       expect {
         post :create,
@@ -41,7 +41,7 @@ describe Hyp::ExperimentUserTrialsController, controller: true do
     end
   end
 
-  describe 'PATCH #convert via AJAX' do
+  describe 'PATCH #convert' do
     let(:trial) do
       Hyp::ExperimentUserTrial.create!(
         experiment: exp,
