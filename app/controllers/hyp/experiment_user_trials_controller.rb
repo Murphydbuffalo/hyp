@@ -20,7 +20,7 @@ module Hyp
       end
     end
 
-    def update
+    def convert
       respond_to do |format|
         format.json do
           if @experiment.record_conversion(@user)
