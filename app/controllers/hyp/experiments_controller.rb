@@ -13,7 +13,7 @@ module Hyp
       limit  = params[:limit]  || 25
       offset = params[:offset] || 0
 
-      @experiments = ExperimentRepo.list
+      @experiments = ExperimentRepo.list(offset: offset, limit: limit)
     end
 
     def show
