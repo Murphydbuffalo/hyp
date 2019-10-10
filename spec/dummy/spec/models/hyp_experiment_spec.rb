@@ -253,5 +253,15 @@ describe Hyp::Experiment do
         expect(subject.treatment_conversion_rate).to be 0.7
       end
     end
+
+    describe '#variant_for(user)' do
+      it 'consistently returns a variant for a user' do
+        variant = subject.variant_for(idiot1)
+
+        20.times do
+          expect(subject.variant_for(idiot1)).to eq variant
+        end
+      end
+    end
   end
 end
