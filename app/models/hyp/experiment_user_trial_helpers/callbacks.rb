@@ -6,7 +6,7 @@ module Hyp
           <<-RUBY
             after_create do
               next unless Hyp.experiment_complete_callback.respond_to?(:call) && experiment.finished?
-              Hyp.experiment_complete_callback.call(experiment_id)
+              Hyp.experiment_complete_callback.call(experiment.id)
             end
           RUBY
         )
