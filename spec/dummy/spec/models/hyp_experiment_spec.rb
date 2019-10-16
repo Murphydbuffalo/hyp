@@ -189,7 +189,7 @@ describe Hyp::Experiment do
         end
 
         it 'returns the percentage of the required number of trials that have been required' do
-          expect(subject.progress).to be 0.01
+          expect(subject.progress).to be 0.0105
         end
       end
     end
