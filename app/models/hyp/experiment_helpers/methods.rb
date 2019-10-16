@@ -51,7 +51,7 @@ module Hyp
       def progress
         @progress ||= (
           variants.sum { |v| num_trials(v) } / (sample_size * variants.count.to_f)
-        ).round(2)
+        ).round(4)
       end
 
       def control_conversion_rate
