@@ -13,6 +13,7 @@ jobs:
         ruby-version: 2.6.x
     - name: Install dependencies
       run: |
+        gem install bundler:2.0.1
         bundle install --jobs 4 --retry 3
     - name: Run specs
       run: |
