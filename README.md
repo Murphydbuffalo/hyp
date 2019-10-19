@@ -1,3 +1,5 @@
+![](https://github.com/murphydbuffalo/hyp/workflows/Run%20Tests/badge.svg)
+
 # Hyp
 Hyp (as in "hypothesis") is in beta! We're still working out the kinks. Capiche?
 
