@@ -162,7 +162,6 @@ PLATFORMS
 DEPENDENCIES
   byebug
   hyp!
-  jquery-rails (~> 4.3)
   pg
   rspec-rails
 
