@@ -15,12 +15,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install postgresql postgresql-contrib libpq-dev
         sudo -u postgres createuser runner
-    - name: Create database
-      run: rails db:create
     - name: Install dependencies
       run: |
         rm Gemfile.lock
         bundle install
+    - name: Create database
+      run: rails db:create
     - name: Run Rails-independent specs
       run: rspec spec/lib
     - name: Run Rails-dependent specs
