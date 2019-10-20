@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
 require '../../lib/hyp/experiment_repo'
 
 describe Hyp::ExperimentRepo do

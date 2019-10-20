@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 describe Hyp::ExperimentUserTrialsController, controller: true do
   routes { Hyp::Engine.routes }
 
