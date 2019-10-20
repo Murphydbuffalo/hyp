@@ -15,8 +15,10 @@ jobs:
       uses: CultureHQ/actions-bundler@master
       with:
         args: exec rspec spec/lib
+
+    - uses: actions/checkout@v1
+      path: spec/dummy
     - name: Run Rails-dependent specs
       uses: CultureHQ/actions-bundler@master
       with:
-        workdir: ./spec/dummy
         args: exec rspec spec
