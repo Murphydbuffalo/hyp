@@ -11,7 +11,13 @@ jobs:
       uses: CultureHQ/actions-bundler@master
       with:
         args: install --jobs 4
-    - name: Run specs
+    - name: Run Rails-independent specs
       uses: CultureHQ/actions-bundler@master
       with:
         args: exec rspec spec/lib/**/*_spec.rb
+    - name: Checkout dummy app
+      runs: cd spec/dummy
+    - name: Run Rails-dependent specs
+      uses: CultureHQ/actions-bundler@master
+      with:
+        args: exec rspec spec/**/*_spec.rb
