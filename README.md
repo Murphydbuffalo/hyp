@@ -53,6 +53,28 @@ experiment.record_conversion(user)
 Calling `#record_conversion` will create a trial for that user if one doesn't already exist. There is a unique database constraint limiting users to a single
 trial per experiment.
 
+### Shorthand Syntax
+You may find yourself repeatedly writing code very similar to that shown above,
+where you:
+1. Find an experiment by its name.
+2. Find the variant of that experiment for a given user.
+3. Maybe record a trial.
+4. Finally, execute one piece of code if the user is in the control variant, and
+another if they're in the treatment.
+
+You can use `Hyp::ExperimentRunner.run` to do all of that:
+```ruby
+Hyp::ExperimentRunner.run(
+  'My experiment',
+  user: 1,
+  control:   -> { # do control things },
+  treatment: -> { # do treatment things },
+  record_trial: true
+)
+```
+
+
+### Working with JavaScript
 Record a trial via JavaScript:
 ```javascript
 $.post(
@@ -66,14 +88,14 @@ $.post(
 
 Record a conversion via JavaScript:
 ```javascript
-$.ajax(
+$.ajax({
   url: '/hyp/experiment_user_trials/convert',
   type: 'PATCH',
   data: { experiment_name: 'My Very First Experiment', user_identifier: 1 },
   success: function(data, status, _xhr) {
     console.log("Status: %s\nData: %s", status, data);
   }
-);
+});
 ```
 
 ### Working with emails
