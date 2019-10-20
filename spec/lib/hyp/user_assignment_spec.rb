@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require 'hyp/user_assignment'
 
 describe Hyp::UserAssignment do

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require 'hyp/statistics/bernoulli_distribution_statistics'
 
 describe Hyp::Statistics::BernoulliDistributionStatistics do
