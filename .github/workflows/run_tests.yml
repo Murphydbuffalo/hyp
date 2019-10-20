@@ -11,6 +11,8 @@ jobs:
     #   uses: actions/setup-ruby@v1
     #   with:
     #     ruby-version: 2.6.x
+    - name: Checkout hyp
+      run: cd hyp
     - name: Install dependencies
       uses: CultureHQ/actions-bundler@master
       with:
