@@ -11,7 +11,7 @@ jobs:
       with:
         ruby-version: "2.6.x"
     - name: Install Postgres
-      run: apt-get install postgresql-11
+      run: sudo apt-get install postgresql-11
     - name: Install dependencies
       run: |
         rm Gemfile.lock
