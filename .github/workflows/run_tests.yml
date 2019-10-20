@@ -13,7 +13,7 @@ jobs:
     - name: Install Postgres
       run: |
         sudo apt-get update
-        sudo apt-get install postgresql
+        sudo apt-get install postgresql postgresql-contrib libpq-dev
     - name: Install dependencies
       run: |
         rm Gemfile.lock
