@@ -13,6 +13,6 @@ jobs:
     #     ruby-version: 2.6.x
     - name: Install dependencies
       uses: CultureHQ/actions-bundler@master
-      args: install --jobs 4
+      with: install --jobs 4
     - name: Run specs
       run: rspec spec/lib/**/*_spec.rb && cd spec/dummy && rspec spec/**/*_spec.rb
