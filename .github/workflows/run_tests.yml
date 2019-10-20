@@ -13,8 +13,7 @@ jobs:
         ruby-version: 2.6.x
     - name: Install dependencies
       run: |
-        gem install bundler:2.0.1
-        bundle install --jobs 4 --retry 3
+        /Users/runner/hostedtoolcache/Ruby/2.6.3/x64/bin/bundle install --jobs 4 --retry 3
     - name: Run specs
       run: |
         rspec spec/lib/**/*_spec.rb && cd spec/dummy && rspec spec/**/*_spec.rb
