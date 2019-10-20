@@ -9,11 +9,9 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: "2.6.x"
-    - name: Install Postgres
-      run: |
-        sudo apt-get update
-        sudo apt-get install postgresql postgresql-contrib libpq-dev
-        sudo -u postgres createuser --superuser runner
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: "11"
     - name: Install dependencies
       run: |
         rm Gemfile.lock
