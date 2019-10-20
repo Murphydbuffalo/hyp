@@ -7,20 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: "2.6.x"
     - name: Install dependencies
-      uses: CultureHQ/actions-bundler@master
-      with:
-        args: install --jobs 4
+      runs: |
+        gem update --system
+        gem install bundler -v "2.0.1"
+        bundle install
     - name: Run Rails-independent specs
-      uses: CultureHQ/actions-bundler@master
-      with:
-        args: exec rspec spec/lib
-    - name: Test pwd
-      working-directory: ./spec/dummy
-      run: |
-        echo `pwd`
-        /github/workspace/vendor/bundle exec rspec spec
+      run: rspec spec/lib
     - name: Run Rails-dependent specs
-      uses: CultureHQ/actions-bundler@master
-      with:
-        args: exec rspec spec
+      working-directory: ./spec/dummy
+      run: rspec spec
