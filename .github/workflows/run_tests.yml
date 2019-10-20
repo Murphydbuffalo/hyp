@@ -10,10 +10,11 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: "2.6.x"
+    - name: Install Postgres
+      run: apt-get install postgresql-11
     - name: Install dependencies
       run: |
         rm Gemfile.lock
-        bundle --version
         bundle install
     - name: Run Rails-independent specs
       run: rspec spec/lib
