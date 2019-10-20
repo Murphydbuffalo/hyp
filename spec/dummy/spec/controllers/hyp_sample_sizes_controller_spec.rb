@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 describe Hyp::SampleSizesController, controller: true do
   routes { Hyp::Engine.routes }
 

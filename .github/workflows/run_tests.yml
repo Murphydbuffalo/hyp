@@ -20,4 +20,4 @@ jobs:
     - name: Run Rails-dependent specs
       uses: CultureHQ/actions-bundler@master
       with:
-        args: exec rspec --require rails_helper spec
+        args: exec rspec spec
