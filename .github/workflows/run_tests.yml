@@ -6,15 +6,13 @@ jobs:
     name: Run RSpec
     runs-on: macOS-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.x
+    # - uses: actions/checkout@v1
+    # - name: Set up Ruby 2.6
+    #   uses: actions/setup-ruby@v1
+    #   with:
+    #     ruby-version: 2.6.x
     - name: Install dependencies
-      run: |
-        /Users/runner/hostedtoolcache/Ruby/2.6.3/x64/bin/bundle update --bundler
-        /Users/runner/hostedtoolcache/Ruby/2.6.3/x64/bin/bundle install --jobs 4 --retry 3
+      uses: CultureHQ/actions-bundler@master
+      args: install --jobs 4
     - name: Run specs
-      run: |
-        rspec spec/lib/**/*_spec.rb && cd spec/dummy && rspec spec/**/*_spec.rb
+      run: rspec spec/lib/**/*_spec.rb && cd spec/dummy && rspec spec/**/*_spec.rb
