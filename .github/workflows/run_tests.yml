@@ -19,7 +19,7 @@ jobs:
       working-directory: ./spec/dummy
       run: |
         echo `pwd`
-        bundle exec rspec spec
+        /github/workspace/vendor/bundle exec rspec spec
     - name: Run Rails-dependent specs
       uses: CultureHQ/actions-bundler@master
       with:
