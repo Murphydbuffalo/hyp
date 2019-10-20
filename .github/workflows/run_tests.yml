@@ -12,7 +12,8 @@ jobs:
         ruby-version: "2.6.x"
     - name: Install dependencies
       run: |
-        bundle update --bundler
+        gem update --system
+        gem update bundler
         bundle install
     - name: Run Rails-independent specs
       run: rspec spec/lib
