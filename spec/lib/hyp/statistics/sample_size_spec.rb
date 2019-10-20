@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require 'hyp/statistics/sample_size'
 
 describe Hyp::Statistics::SampleSize do

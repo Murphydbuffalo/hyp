@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require 'hyp/statistics/hypothesis_test'
 
 describe Hyp::Statistics::HypothesisTest do

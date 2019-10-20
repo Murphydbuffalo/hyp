@@ -1,0 +1,12 @@
+name: Run Linter
+on: [push]
+
+jobs:
+  build:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+    - name: Rubocop Linter
+      uses: andrewmcodes/rubocop-linter-action@v0.1.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

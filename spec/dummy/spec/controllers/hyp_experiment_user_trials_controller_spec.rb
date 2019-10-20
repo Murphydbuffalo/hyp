@@ -38,18 +38,12 @@ describe Hyp::ExperimentUserTrialsController, controller: true do
             user_identifier: idiot.id
           }
       }.not_to change { Hyp::ExperimentUserTrial.count }
+
+      expect(Hyp::ExperimentUserTrial.first).not_to be_converted
     end
   end
 
   describe 'PATCH #convert' do
-    let(:trial) do
-      Hyp::ExperimentUserTrial.create!(
-        experiment: exp,
-        variant: exp.control_variant,
-        user: idiot
-      )
-    end
-
     it 'marks an `ExperimentUserTrial` as converted' do
       expect {
         patch :convert,
@@ -58,7 +52,9 @@ describe Hyp::ExperimentUserTrialsController, controller: true do
             experiment_name: exp.name,
             user_identifier: idiot.id
           }
-      }.to change { trial.reload && trial.converted? }.from(false).to(true)
+      }.to change { Hyp::ExperimentUserTrial.count }.by(1)
+
+      expect(Hyp::ExperimentUserTrial.first).to be_converted
     end
   end
 end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require 'hyp/statistics/z_table'
 
 describe Hyp::Statistics::ZTable do
