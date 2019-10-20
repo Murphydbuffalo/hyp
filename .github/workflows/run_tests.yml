@@ -17,7 +17,6 @@ jobs:
         args: exec rspec spec/lib
     - name: Run Rails-dependent specs
       uses: CultureHQ/actions-bundler@master
-      env:
-        WORKDIR: ./spec/dummy
       with:
+        workdir: ./spec/dummy
         args: exec rspec spec
