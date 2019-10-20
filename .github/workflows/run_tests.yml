@@ -13,6 +13,7 @@ jobs:
         ruby-version: 2.6.x
     - name: Install dependencies
       run: |
+        /Users/runner/hostedtoolcache/Ruby/2.6.3/x64/bin/bundle update --bundler
         /Users/runner/hostedtoolcache/Ruby/2.6.3/x64/bin/bundle install --jobs 4 --retry 3
     - name: Run specs
       run: |
