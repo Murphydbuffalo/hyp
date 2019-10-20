@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 describe Hyp::ExperimentsController, controller: true do
   include ActionView::Helpers::NumberHelper
   routes { Hyp::Engine.routes }
