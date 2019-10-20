@@ -12,7 +12,9 @@ jobs:
     #   with:
     #     ruby-version: 2.6.x
     - name: Checkout hyp
-      run: echo `pwd`
+      run: |
+        echo `pwd`
+        echo `ls`
     - name: Install dependencies
       uses: CultureHQ/actions-bundler@master
       with:
