@@ -23,7 +23,6 @@ module Hyp
     end
 
     def run
-      # TODO make it possible to configure this to raise an error
       return if experiment.nil?
 
       experiment.record_trial(user) if record_trial?
