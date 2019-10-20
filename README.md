@@ -1,4 +1,5 @@
-![](https://github.com/murphydbuffalo/hyp/workflows/Run%20Tests/badge.svg)
+![](https://github.com/murphydbuffalo/hyp/workflows/Tests/badge.svg)
+![](https://github.com/murphydbuffalo/hyp/workflows/Linter/badge.svg)
 
 # Hyp
 Hyp (as in "hypothesis") is in beta! We're still working out the kinks. Capiche?

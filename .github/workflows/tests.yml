@@ -1,6 +1,5 @@
-name: Run Tests
+name: Tests
 on: [push]
-
 jobs:
   build:
     name: RSpec

@@ -1,6 +1,5 @@
-name: Run Linter
+name: Linter
 on: [push]
-
 jobs:
   build:
     name: Rubocop
