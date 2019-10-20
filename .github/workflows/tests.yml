@@ -1,8 +1,5 @@
-name: Run Tests
-on:
-  push
-  pull_request:
-    types: [closed]
+name: Tests
+on: [push]
 jobs:
   build:
     name: RSpec
