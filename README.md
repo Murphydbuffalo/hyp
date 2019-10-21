@@ -72,7 +72,9 @@ Hyp::ExperimentRunner.run(
   record_trial: true
 )
 ```
-
+If no experiment with the provided name is found then the `control` block of code
+will execute. This is nice because it means you don't need to create experiments
+to get the mounting application's tests to pass.
 
 ### Working with JavaScript
 Record a trial via JavaScript:

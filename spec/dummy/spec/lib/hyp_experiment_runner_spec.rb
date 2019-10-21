@@ -41,7 +41,7 @@ describe Hyp::ExperimentRunner do
         allow_any_instance_of(Hyp::Variant).to receive(:treatment?) { true }
       end
 
-      it 'executes the `control` block of code' do
+      it 'executes the `treatment` block of code' do
         expect(idiot).to receive(:age)
 
         described_class.run(
@@ -68,15 +68,15 @@ describe Hyp::ExperimentRunner do
     end
 
     context 'no experiment is found' do
-      it 'does nothing' do
-        expect {
-          described_class.run(
-            "This is not the experiment you're looking for",
-            user: idiot,
-            control: -> { idiot.name },
-            treatment: -> { idiot.age }
-          )
-        }.not_to raise_error
+      it 'executes the control block' do
+        expect(idiot).to receive(:name)
+
+        described_class.run(
+          "This is not the experiment you're looking for",
+          user: idiot,
+          control: -> { idiot.name },
+          treatment: -> { idiot.age }
+        )
       end
     end
   end

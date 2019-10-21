@@ -23,7 +23,7 @@ module Hyp
     end
 
     def run
-      return if experiment.nil?
+      return control.call if experiment.nil?
 
       experiment.record_trial(user) if record_trial?
 
