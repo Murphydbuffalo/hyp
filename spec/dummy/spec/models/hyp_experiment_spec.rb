@@ -254,4 +254,50 @@ describe Hyp::Experiment do
       end
     end
   end
+
+  describe '#variant_for(user)' do
+    it 'consistently returns a variant for a user' do
+      variant = subject.variant_for(idiot1)
+
+      20.times do
+        expect(subject.variant_for(idiot1)).to eq variant
+      end
+    end
+  end
+
+  describe '#record_trial(user)' do
+    it 'finds or creates a trial for the user' do
+      expect {
+        subject.record_trial(idiot1)
+      }.to change {
+        subject.experiment_user_trials.count
+      }.by(1)
+
+      expect {
+        subject.record_trial(idiot1)
+      }.not_to change {
+        subject.experiment_user_trials.count
+      }
+
+      expect(Hyp::ExperimentUserTrial.last).not_to be_converted
+    end
+  end
+
+  describe '#record_conversion(user)' do
+    it 'finds or creates a trial for the user and sets `converted` to `true`' do
+      expect {
+        subject.record_conversion(idiot1)
+      }.to change {
+        subject.experiment_user_trials.count
+      }.by(1)
+
+      expect(Hyp::ExperimentUserTrial.last).to be_converted
+
+      expect {
+        subject.record_conversion(idiot1)
+      }.not_to change {
+        subject.experiment_user_trials.count
+      }
+    end
+  end
 end

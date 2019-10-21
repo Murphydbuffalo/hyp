@@ -53,6 +53,30 @@ experiment.record_conversion(user)
 Calling `#record_conversion` will create a trial for that user if one doesn't already exist. There is a unique database constraint limiting users to a single
 trial per experiment.
 
+### Shorthand Syntax
+You may find yourself repeatedly writing code very similar to that shown above,
+where you:
+1. Find an experiment by its name.
+2. Find the variant of that experiment for a given user.
+3. Maybe record a trial.
+4. Finally, execute one piece of code if the user is in the control variant, and
+another if they're in the treatment.
+
+You can use `Hyp::ExperimentRunner.run` to do all of that:
+```ruby
+Hyp::ExperimentRunner.run(
+  'My experiment',
+  user: 1,
+  control:   -> { # do control things },
+  treatment: -> { # do treatment things },
+  record_trial: true
+)
+```
+If no experiment with the provided name is found then the `control` block of code
+will execute. This is nice because it means you don't need to have your
+application's tests create experiments in order for them to pass.
+
+### Working with JavaScript
 Record a trial via JavaScript:
 ```javascript
 $.post(
@@ -66,14 +90,14 @@ $.post(
 
 Record a conversion via JavaScript:
 ```javascript
-$.ajax(
+$.ajax({
   url: '/hyp/experiment_user_trials/convert',
   type: 'PATCH',
   data: { experiment_name: 'My Very First Experiment', user_identifier: 1 },
   success: function(data, status, _xhr) {
     console.log("Status: %s\nData: %s", status, data);
   }
-);
+});
 ```
 
 ### Working with emails
@@ -257,7 +281,11 @@ In practice this isn't a terrible experience. Release a version of your feature 
 The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
 
 ### Minimum detectable effect (MDE)
-The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. When your experiment runs we will not count as significant any effects smaller than this level. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will give you your specified level of power for the calculated sample size, given your levels of alpha and the control conversion rate.
+The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will guarantee you your specified level of power for the calculated sample size, given your alpha and control conversion rate.
+
+If your experiment ends up having an effect size larger than your MDE, great! That
+means you have even higher statistical power than you were aiming for, and thus
+a lower risk of false negatives.
 
 The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
 
@@ -273,6 +301,20 @@ CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rat
 + `.find(id)` - Retrieve an experiment by ID with its variants eager loaded.
 + `.find_by(hash)` - Retrieve an experiment by a hash with its variants eager loaded.
 + `.create(hash)` - Create an experiment, including control and treatment variants.
+
+### `Hyp::ExperimentRunner`
+Conditionally execute code for a given user and experiment depending upon which
+variant the user has been assigned to.
+#### Class methods
++ `.run(experiment_name, user:, control:, treatment:, record_trial: false)` -
+This methods queries for an experiment with the given name and then invokes
+`#call` on whatever you pass to `control` or `treatment` (presumable a lambda or
+proc) depending on the variant the user has been assigned to.
+
+If no experiment is found then the `control` block is called.
+
+`record_trial` defaults to `false`. If set to `true` it records a trial for the
+user and experiment.
 
 ### `Hyp::Experiment`
 #### Associations
