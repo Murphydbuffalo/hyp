@@ -302,6 +302,20 @@ CRUD experiments. It's almost always preferable to use `Hyp::ExperimentRepo` rat
 + `.find_by(hash)` - Retrieve an experiment by a hash with its variants eager loaded.
 + `.create(hash)` - Create an experiment, including control and treatment variants.
 
+### `Hyp::ExperimentRunner`
+Conditionally execute code for a given user and experiment depending upon which
+variant the user has been assigned to.
+#### Class methods
++ `.run(experiment_name, user:, control:, treatment:, record_trial: false)` -
+This methods queries for an experiment with the given name and then invokes
+`#call` on whatever you pass to `control` or `treatment` (presumable a lambda or
+proc) depending on the variant the user has been assigned to.
+
+If no experiment is found then the `control` block is called.
+
+`record_trial` defaults to `false`. If set to `true` it records a trial for the
+user and experiment.
+
 ### `Hyp::Experiment`
 #### Associations
 + `has_many` `Hyp::Variant`s, an experiment will always have two variants.
