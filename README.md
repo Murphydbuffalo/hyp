@@ -281,7 +281,11 @@ In practice this isn't a terrible experience. Release a version of your feature 
 The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
 
 ### Minimum detectable effect (MDE)
-The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. When your experiment runs we will not count as significant any effects smaller than this level. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will give you your specified level of power for the calculated sample size, given your levels of alpha and the control conversion rate.
+The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will guarantee you your specified level of power for the calculated sample size, given your alpha and control conversion rate.
+
+If your experiment ends up having an effect size larger than your MDE, great! That
+means you have even higher statistical power than you were aiming for, and thus
+a lower risk of false negatives.
 
 The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
 
