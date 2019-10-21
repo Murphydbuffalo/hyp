@@ -73,8 +73,8 @@ Hyp::ExperimentRunner.run(
 )
 ```
 If no experiment with the provided name is found then the `control` block of code
-will execute. This is nice because it means you don't need to create experiments
-to get the mounting application's tests to pass.
+will execute. This is nice because it means you don't need to have your
+application's tests create experiments in order for them to pass.
 
 ### Working with JavaScript
 Record a trial via JavaScript:
