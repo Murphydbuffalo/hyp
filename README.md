@@ -300,6 +300,21 @@ to have higher levels of power.
 
 Power is required to be one of two conventional values: 0.80 or 0.90.
 
+In our sample size calculations power is very closely related to another concept:
+the minimum detectable effect, or MDE.
+
+### Minimum detectable effect (MDE)
+The smallest effect size you would care to detect. We don't want to run an experiment
+only to find out that our result, although statistically significant, is not
+large enough to deliver business value.
+
+*The level of power we calculate is for an effect size at least as large as our
+MDE.* So if 1% is the smallest effect size that matters to your business for a
+given experiment, and your power level is 80%, your experiment will have an 80%
+chance of detecting as significant a 1% effect.
+
+If you see a 2% effect it will be even more likely to be deemed significant.
+
 ### Control conversion rate
 You must have existing data for or a reasonable estimate of the conversion rate
 of the current variant of the feature. If you don't have data on an existing
@@ -324,14 +339,7 @@ occur. Thus the closer to 50% the conversion rate is, the more variability there
 is in the probability distribution of our experiment and the larger the sample size
 that is required to guarantee the levels of alpha and power we have chosen.
 
-### Minimum detectable effect (MDE)
-The smallest effect size you would care to detect. We don't want to run an experiment
-only to find out that our effect size, although statistically significant, is not
-large enough to deliver business value. The MDE is not a guarantee that the experiment
-will have an effect size of at least a certain amount. Rather it is a parameter
-to our sample size calculation.
-
-### What does it all mean????
+### What does the sample size mean?
 The sample size calculation is telling us the smallest sample size required
 *for each variant* in order to guarantee our chosen levels of power and alpha,
 given our control conversion rate and an effect size at least as big as our MDE.
