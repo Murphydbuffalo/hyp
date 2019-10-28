@@ -1,0 +1,27 @@
+name: Tests
+on: [push]
+jobs:
+  build:
+    name: RSpec
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: "2.6.x"
+    - name: Install Postgres
+      run: |
+        sudo apt-get update
+        sudo apt-get install postgresql postgresql-contrib libpq-dev
+        sudo -u postgres createuser --superuser runner
+    - name: Install dependencies
+      run: |
+        rm Gemfile.lock
+        bundle install
+    - name: Create database
+      run: rails db:create
+    - name: Run Rails-independent specs
+      run: rspec spec/lib
+    - name: Run Rails-dependent specs
+      working-directory: ./spec/dummy
+      run: rspec spec

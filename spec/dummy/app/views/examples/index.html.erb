@@ -1,0 +1,51 @@
+<% if flash[:notice] %>
+  <p style="color:red;"><%= flash[:notice] %></p>
+<% end %>
+
+<% if flash[:success] %>
+  <p style="color:green;"><%= flash[:success] %></p>
+<% end %>
+
+<h1>
+  <%= link_to 'Experiments', hyp.experiments_path %>
+</h1>
+
+<ul>
+  <li>
+    <%= link_to 'Record a trial via query param', examples_path(hyp: @experiment.trial_query_param(@user)) %>
+  </li>
+  <li>
+    <%= link_to 'Record a conversion via query param', examples_path(hyp: @experiment.conversion_query_param(@user)) %>
+  </li>
+  <li>
+    <%= link_to 'Conditionally execute code based on the variant the user belongs to', examples_path(run_experiment: true) %>
+  </li>
+  <li>
+    <%= link_to 'Record a trial via AJAX', '#', { class: 'ajax-trial' } %>
+  </li>
+  <li>
+    <%= link_to 'Record a conversion via AJAX', '#', { class: 'ajax-conversion' } %>
+  </li>
+</ul>
+
+<%= javascript_tag do %>
+  $('.ajax-trial').click(function(e) {
+    e.preventDefault();
+
+
+    $.post(
+      '/hyp/experiment_user_trials',
+      { experiment_name: "<%= @experiment.name %>", user_identifier: <%= @user.id %> }
+    );
+  });
+
+  $('.ajax-conversion').click(function(e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: '/hyp/experiment_user_trials/convert',
+      type: 'PATCH',
+      data: { experiment_name: "<%= @experiment.name %>", user_identifier: <%= @user.id %> }
+    });
+  });
+<% end %>

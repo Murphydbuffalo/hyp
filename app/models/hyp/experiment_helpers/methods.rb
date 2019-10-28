@@ -35,7 +35,7 @@ module Hyp
       end
 
       def winner
-        return nil unless finished? && significant_result? && effect_size_sufficient?
+        return nil unless finished? && significant_result?
 
         if control_conversion_rate > treatment_conversion_rate
           control_variant
@@ -51,7 +51,7 @@ module Hyp
       def progress
         @progress ||= (
           variants.sum { |v| num_trials(v) } / (sample_size * variants.count.to_f)
-        ).round(2)
+        ).round(4)
       end
 
       def control_conversion_rate
@@ -151,10 +151,6 @@ module Hyp
 
         def treatment_trials
           ExperimentUserTrial.where(experiment: self, variant: treatment_variant)
-        end
-
-        def effect_size_sufficient?
-          effect_size >= minimum_detectable_effect
         end
     end
   end

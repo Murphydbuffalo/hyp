@@ -2,6 +2,7 @@
 
 require 'hyp/engine'
 require 'hyp/experiment_repo'
+require 'hyp/experiment_runner'
 require 'hyp/query_param'
 
 module Hyp
