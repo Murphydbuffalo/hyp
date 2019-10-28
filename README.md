@@ -473,22 +473,27 @@ Useful for running email related experiments. Generate and parse base64 encoded 
 + `#notify_experiment_done(experiment_id, receiver_email)` - Send an email to `receiver_email` summarizing the results of an experiment. `ExperimentMailer` is an `ActionMailer` subclass so it returns an instance of `Mail::Message` which you can use to actually send email by calling `#deliver_now` or `#deliver_later` on ion it.
 
 ## Testing
-There are RSpec unit tests for code that doesn't depend on Rails in the `spec`
-directory as well as a dummy Rails application under `spec/dummy`.
+There are RSpec unit tests for code that doesn't depend on Rails in the `spec/lib`
+directory. Run these with `rspec spec/lib`.
 
-There are specs for Rails-dependent classes in `spec/dummy/spec`, to run those:
+There is also a bare-bones Rails application under `spec/dummy` that is used to
+test out Hyp while it's mounted on a Rails app.
+
+All specs that test Rails-dependent code live inside this dummy app. You can run
+those specs with:
 1. `cd spec/dummy`
-2. `rspec spec/**/*_spec.rb`
+2. `rspec spec`
 
 You can also boot up the dummy application to play around with Hyp in the browser.
-To. run the dummy app you need to:
-1. `cd spec/dummy`
-2. `Run a local postgres server`
-3. `createdb dummy_development`
-4. `cd spec/dummy`
-5. `bundle install`
-6. `bundle exec rake db:migrate`
-7. `rails s`
+To run the dummy app you need to:
+1. `Run a local Postgres server`
+2. `createdb dummy_development`
+3. `cd spec/dummy`
+4. `bundle install`
+5. `bundle exec rake db:migrate`
+6. `rails s`
+
+In the future we will add a second dummy app that uses Mongoid.
 
 ### Mailer previews
 You can preview the `#notify_experiment_done` email by starting up the dummy app and visiting the [mailer preview path](http://localhost:3000/rails/mailers/hyp/experiment_mailer/notify_experiment_done) for that email.
