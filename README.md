@@ -309,16 +309,17 @@ In our sample size calculations power is very closely related to another concept
 the minimum detectable effect, or MDE.
 
 ### Minimum detectable effect (MDE)
-The smallest effect size you would care to detect. We don't want to run an experiment
-only to find out that our result, although statistically significant, is not
-large enough to deliver business value.
+The smallest effect size you would care to detect. We don't want to run an
+experiment only to find out that our result, although statistically significant,
+is not large enough to deliver business value.
 
-*The level of power we calculate is for an effect size at least as large as our
+*The level of power we calculate is for an effect size at least as large as your
 MDE.* So if 1% is the smallest effect size that matters to your business for a
 given experiment, and your power level is 80%, your experiment will have an 80%
-chance of detecting as significant a 1% effect.
+chance of detecting a significant 1% effect.
 
-If you see a 2% effect it will be even more likely to be deemed significant.
+If you have a 2% effect size your power will be even higher than the level you
+specified for your MDE of 1%.
 
 ### Control conversion rate
 You must have existing data for or a reasonable estimate of the conversion rate
