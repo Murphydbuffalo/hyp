@@ -298,6 +298,11 @@ if one is present. Higher power means a lower probability of false negatives (no
 rejecting the null hypothesis when it is false). Larger sample sizes allow you
 to have higher levels of power.
 
+All else being equal decreasing alpha means decreasing power, because a lower
+alpha makes it harder to classify a result as significant. So lowering alpha
+decreases the chances of getting a false positive and increases the chances of
+getting a false negative.
+
 Power is required to be one of two conventional values: 0.80 or 0.90.
 
 In our sample size calculations power is very closely related to another concept:
