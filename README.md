@@ -265,9 +265,9 @@ results that we actually care about.
 in our experiments. There is always some chance of each. As we'll discuss below
 we can choose different levels of `alpha` and `power` to set the probabilities of
 false positives and negatives, and these parameters are part of what dictates
-what sample size we'll need.
+the sample size we'll need.
 
-The sample size calculation also requires existing data about your control variant
+The sample size calculation also requires data about the existing control variant
 and something called the minimum detectable effect.
 
 So what are all of these things and why do you need to provide them in order to
@@ -298,10 +298,8 @@ if one is present. Higher power means a lower probability of false negatives (no
 rejecting the null hypothesis when it is false). Larger sample sizes allow you
 to have higher levels of power.
 
-All else being equal decreasing alpha means decreasing power, because a lower
-alpha makes it harder to classify a result as significant. So lowering alpha
-decreases the chances of getting a false positive and increases the chances of
-getting a false negative.
+All else being equal, decreasing alpha means decreasing power because a lower
+alpha makes it harder to classify a result as significant.
 
 Power is required to be one of two conventional values: 0.80 or 0.90.
 
