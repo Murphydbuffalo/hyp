@@ -26,8 +26,8 @@ Both ActiveRecord- and Mongoid-backed applications are supported.
 ## Basic usage
 Conditionally execute code based on the experiment variant a user belongs to:
 ```ruby
-experiment  = Hyp::ExperimentRepo.find_by(name: 'My very first experiment')
-variant = experiment.variant_for(user)
+experiment = Hyp::ExperimentRepo.find_by(name: 'My very first experiment')
+variant    = experiment.variant_for(user)
 
 if variant.control?
   # do existing behavior
@@ -66,7 +66,7 @@ You can use `Hyp::ExperimentRunner.run` to do all of that:
 ```ruby
 Hyp::ExperimentRunner.run(
   'My experiment',
-  user: 1,
+  user: user,
   control:   -> { # do control things },
   treatment: -> { # do treatment things },
   record_trial: true
@@ -135,10 +135,11 @@ can be drawn from it (if any):
 ![Viewing the details of an ongoing experiment](https://raw.githubusercontent.com/Murphydbuffalo/hyp/master/app/assets/images/hyp/in_progress_experiment.png)
 
 ## Installation and Configuration
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile:
 
 ```ruby
-gem 'hyp'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+gem 'hyp', github: 'murphydbuffalo/hyp'
 ```
 
 And then run:
@@ -169,7 +170,7 @@ In Hyp we associate each trial with a particular user using a "has and belongs
 to many" relationships between the user and experiment. The `--user-class` option tells Hyp what class you'd like to use as the "user" in your experiments.
 It can be any string that can be `#constantize`'d to a valid class from your application code. It defaults to `'User'` if not present.
 
-If you add `--user-class 'MyClass'` the generator will add
+If you add `--user-class MyClass` the generator will add
 `Hyp.user_class_name = 'MyClass'` to `config/initializers/hyp.rb`.
 
 ## Get notified upon completion of an experiment
@@ -231,14 +232,15 @@ An experiment might tell you that while the results are significant, it is the
 *control* variant that performs better, and therefore that you should not
 replace it with the treatment.
 
-Perhaps no significant result will be detected: remember that you only have a
-percentage chance of detecting positive results equal to your chosen level of
+Perhaps no significant result will be detected: keep in mind that you only have
+a percentage chance of detecting positive results equal to your chosen level of
 statistical power.
 
 You might decide to replace the existing variant of the feature even if there is
 no statistically significant difference between the two variants simply because
-you prefer the code quality or esthetic quality of one variant as the Signal v.
-Noise blog points out in [an excellent post on the topic](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size).
+you prefer the code or esthetic quality of one variant. The Signal v. Noise blog
+has [an excellent post](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size)
+ on this topic.
 
 ## Creating experiments and calculating sample sizes
 _Beware! We talk about statistics below. If you'd rather just use Hyp and not get a refresher math course feel free to skip this section. If you want to be confident that Hyp works properly or are simply curious to learn more, please continue :)._
@@ -247,51 +249,109 @@ When you create an experiment Hyp will calculate the necessary sample size for y
 
 Check out Evan Miller's excellent blog post [How not to run an A/B test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) to get a sense of why this is.
 
-In short, if you run your test until you find a significant result you're gaming the system and tricking yourself into thinking your results are statistically valid when they may not be. Specifically, you could find a significant result
-after 500 trials and stop the experiment, not realizing that after 1000 trials the result would not have been significant.
+In short, if you run your test until you find a significant result you're gaming
+the system and tricking yourself into thinking your results are statistically
+valid when they may not be. Specifically, you could find a significant result
+after 500 trials and stop the experiment, not realizing that after 1000 trials
+the result would not have been significant.
 
 On the other hand, you can also run your experiment for too long and get *too large of a sample size*. The larger your sample the smaller its standard deviation will be, and we determine statistical significance by measuring how many standard deviations from the mean a result is. Therefore, with a large enough sample size *any* result will be found statistically significant by virtue of the standard deviation being very small. This can mean running an experiment only to find a significant result that you don't care about, maybe a 0.00001% increase in some
 metric.
 
-What we want is a sample size that will effectively find us significant results that we actually care about. For a more in-depth discussion of these concepts
-check out my blog post on the subject: [Why do I need such a large sample size for my A/B test?](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab).
+What we want is the smallest sample size that will effectively find us significant
+results that we actually care about.
 
-To create an experiment you are asked to provide four values:
-+ Alpha (also known as the significance level)
-+ Statistical power
-+ The control conversion rate
-+ The minimum detectable effect
+"Effectively" means balancing the likelihood of false positives and false negatives
+in our experiments. There is always some chance of each. As we'll discuss below
+we can choose different levels of `alpha` and `power` to set the probabilities of
+false positives and negatives, and these parameters are part of what dictates
+what sample size we'll need.
 
-What are all of these things and why do you need to provide them in order to
+The sample size calculation also requires existing data about your control variant
+and something called the minimum detectable effect.
+
+So what are all of these things and why do you need to provide them in order to
 calculate the sample size?
 
 ### Alpha
-This is the probability of a false positive, also known as the significance level. Changing this parameter involves a trade off: a lower alpha means a lower risk of false positives but a higher risk of false negatives because the criteria for a result being significant is more stringent.
+Also known as the significance level, alpha is the threshold at which we deem a
+p-value to be statistically significant. If our p-value is lower than our chosen
+level of alpha we reject the null hypothesis and accept the alternate hypothesis.
+
+All this means is that if we assume the null hypothesis is true and there really
+is no difference between the control and treatment conversion rates, then the
+effect size we saw would happen by random chance less often than our chosen level
+of alpha.
+
+For example an alpha level of 5% means that we will only deem significant results
+that would happen less than 5% of the time, assuming the null hypothesis is true.
+
+Changing this parameter involves a trade off: a lower alpha means a lower risk
+of false positives but a higher risk of false negatives because the criteria for
+a result being significant is more stringent.
+
 Alpha is required to be one of two conventional values: 0.05 or 0.01.
 
 ### Statistical power
-This is the probability of detecting a positive result (rejecting the null hypothesis) if one is present. Higher power means a lower probability of false negatives (not rejecting the null hypothesis when it is false). Larger sample sizes allow you to have higher levels of power.
+This is the probability of detecting a positive result (rejecting the null hypothesis)
+if one is present. Higher power means a lower probability of false negatives (not
+rejecting the null hypothesis when it is false). Larger sample sizes allow you
+to have higher levels of power.
+
 Power is required to be one of two conventional values: 0.80 or 0.90.
 
 ### Control conversion rate
-You must have existing data for or a reasonable estimate of the conversion rate of the current variant of the feature. If you don't have data on an existing version of the feature - maybe you haven't released it yet - go and gather some data before running experiments on it.
+You must have existing data for or a reasonable estimate of the conversion rate
+of the current variant of the feature. If you don't have data on an existing
+version of the feature - maybe you haven't released it yet - go and gather some
+data before running experiments on it.
 
-In practice this isn't a terrible experience. Release a version of your feature and gather data on its conversion rate until you have a few hundred examples. Now you're ready to go with a reasonable estimate of the feature's conversion rate AND you've had time to work out any major kinks in the release before you start experimenting with different versions of it.
+In practice this isn't a terrible experience. Release a version of your feature
+and gather data on its conversion rate until you have a few hundred examples.
+Now you're ready to go with a reasonable estimate of the feature's conversion rate
+AND you've had time to work out any major kinks in the release before you start
+experimenting with different versions of it.
 
-The closer this value is to 0.5 the larger the required sample size will be. This is because there is greater variance in the distribution as its conversion rate approaches 0.5.
+The closer this value is to 0.5 the larger the required sample size will be. This
+is because there is greater variance in the distribution as its conversion rate
+approaches 0.5. Think of it this way: if the control conversion rate is 100% then
+we always know what will happen. The user will always convert. This means
+there is no variation in the outcomes. The closer the conversion rate comes to 50%
+the less able we are to predict what will happen.
+
+At a 50% conversion rate conversions and non-conversions are equally likely to
+occur. Thus the closer to 50% the conversion rate is, the more variability there
+is in the probability distribution of our experiment and the larger the sample size
+that is required to guarantee the levels of alpha and power we have chosen.
 
 ### Minimum detectable effect (MDE)
-The smallest effect size you would care to detect. We don't want to run an experiment only to find out that our effect size, although statistically significant, is not large enough to deliver business value. The MDE is not a guarantee that the experiment will have an effect size of at least a certain amount. Rather it is a parameter to our sample size calculation that will guarantee you your specified level of power for the calculated sample size, given your alpha and control conversion rate.
+The smallest effect size you would care to detect. We don't want to run an experiment
+only to find out that our effect size, although statistically significant, is not
+large enough to deliver business value. The MDE is not a guarantee that the experiment
+will have an effect size of at least a certain amount. Rather it is a parameter
+to our sample size calculation.
+
+### What does it all mean????
+The sample size calculation is telling us the smallest sample size required
+*for each variant* in order to guarantee our chosen levels of power and alpha,
+given our control conversion rate and an effect size at least as big as our MDE.
 
 If your experiment ends up having an effect size larger than your MDE, great! That
 means you have even higher statistical power than you were aiming for, and thus
 a lower risk of false negatives.
 
-The sample size we calculate using these parameters is the smallest sample size required *for each variant* so that you will have your specified level of power given your level alpha, your control proportion, and an effect size at least as big as your MDE.
+I like to think of it as having various levers to pull and tradeoffs to make. If
+you want lower alpha and higher power, you'll need a higher sample size. If you
+want to be able to detect very small effects, you'll need a higher sample size.
+If there is a ton of variability in the experiment's probability distribution
+you'll need a higher sample size.
 
-I like to think of it as having various levers to pull and tradeoffs to make. If you want lower alpha and higher power, you'll need a higher sample size. If you want to be able to detect very small effects, you'll need a higher sample size. If there is a ton of variability in your control variant's probability distribution you'll need a higher sample size.
+But conversely, if you only care about very large effect sizes, or if you don't
+need a high level of power, or a low level of alpha, then you can get away with
+a smaller sample size.
 
-But conversely, if you only care about very large effect sizes, or if you don't need a high level of power, or a low level of alpha, then you can get away with a smaller sample size.
+For a more in-depth discussion of these concepts check out my blog post on the
+subject: [Why do I need such a large sample size for my A/B test?](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab)
 
 ## Documentation
 ### `Hyp::ExperimentRepo`
