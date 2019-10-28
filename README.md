@@ -314,12 +314,14 @@ experimenting with different versions of it.
 
 The closer this value is to 0.5 the larger the required sample size will be. This
 is because there is greater variance in the distribution as its conversion rate
-approaches 0.5. Think of it this way: if the control conversion rate was 100% then
-we would always know what will happen. The user will always convert. This means
-there is no variation in the outcomes. The close the conversion rate comes to 50%
-the less able we are to predict what will happen, conversion or non-conversion.
-Thus the closer to 50% the conversion rate is, the more variability there is in
-the probability distribution of our experiment and the larger the sample size
+approaches 0.5. Think of it this way: if the control conversion rate is 100% then
+we always know what will happen. The user will always convert. This means
+there is no variation in the outcomes. The closer the conversion rate comes to 50%
+the less able we are to predict what will happen.
+
+At a 50% conversion rate conversions and non-conversions are equally likely to
+occur. Thus the closer to 50% the conversion rate is, the more variability there
+is in the probability distribution of our experiment and the larger the sample size
 that is required to guarantee the levels of alpha and power we have chosen.
 
 ### Minimum detectable effect (MDE)
