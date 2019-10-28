@@ -5,10 +5,9 @@ nav {
   background-color: var(--black);
 }
 
-nav h1 {
-  color: white;
-  font-size: 32px;
-  font-style: italic;
+nav .logo {
+  width: 96px;
+  margin-bottom: 1em;
 }
 
 nav a, nav a:visited {
