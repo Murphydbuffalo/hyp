@@ -275,14 +275,15 @@ calculate the sample size?
 
 ### Alpha
 Also known as the significance level, alpha is the threshold at which we deem a
-p-value to be significant. If our p-value is lower than our chosen level of alpha
-we reject the null hypothesis and accept the alternate hypothesis, deeming the
-result to be statistically significant. All this means is that if we assume the
-null hypothesis is true and there really is no difference between the control and
-treatment conversion rates, then the effect size we saw would happen by random
-chance less often than our chosen level of alpha.
+p-value to be statistically significant. If our p-value is lower than our chosen
+level of alpha we reject the null hypothesis and accept the alternate hypothesis.
 
-For example an alpha level of 5% means that we will deem significant only results
+All this means is that if we assume the null hypothesis is true and there really
+is no difference between the control and treatment conversion rates, then the
+effect size we saw would happen by random chance less often than our chosen level
+of alpha.
+
+For example an alpha level of 5% means that we will only deem significant results
 that would happen less than 5% of the time, assuming the null hypothesis is true.
 
 Changing this parameter involves a trade off: a lower alpha means a lower risk
