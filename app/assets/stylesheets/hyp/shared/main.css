@@ -3,43 +3,51 @@ html { height: 100%; }
 body {
   height: 100%;
   width: 100%;
-  background-color: #e8ebed;
-  color: #48545b;
-  font-size: 14px;
-  font-family: "Open Sans", "Arial", "Helvetica Neue", Helvetica, sans-serif;
-  line-height: 1.4em;
-  -webkit-font-smoothing: antialiased;
+  display: flex;
+  color: var(--blue-dark);
+  background: var(--black);
 }
 
-a:visited {
-  color: black;
-  font-weight: bold;
+.wrapper {
+  padding: 2em;
+}
+
+.wrapper {
+  flex-grow: 1;
+  margin: 10px;
+  background: white;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 1.5em 0;
+}
+
+td.name {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+a:not(.button) {
+  color: var(--orange-dark);
+  font-weight: 700;
   text-decoration: none;
 }
 
-header {
-  background-color: #0a4773;
-  min-height: 500px;
+a:not(.button):hover {
+  text-decoration: underline;
 }
 
-#modal {
-  position: relative;
-  margin: auto;
-  top: 5em;
-  background: white;
-  min-height: 500px;
-  width: 70%;
-  border-radius: 5px;
-  box-shadow: 1px 1px 4px lightgray;
-  padding: 1em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  text-align: center;
-}
-
-#modal table {
-  margin: 0 auto;
+.page-controls {
+  margin-bottom: 2em;
+  font-size: 2em;
 }
 
 .experiment-parameters p, .conversion-rates p {
@@ -68,16 +76,6 @@ header {
   height: 100%;
   background: #035908;
   border-radius: 6px;
-}
-
-nav {
-  position: absolute;
-  bottom: 0.5em;
-  left: 1em;
-}
-
-nav h5 {
-  display: inline-block;
 }
 
 #modal form div {

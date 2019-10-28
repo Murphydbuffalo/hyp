@@ -1,0 +1,25 @@
+.button {
+  display: block;
+  padding: 1em 1.2em;
+  height: auto;
+  background: var(--orange);
+  line-height: 1;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  border: 0;
+  border-radius: 8px;
+  transition: background 0.1s ease;
+}
+
+.button:hover {
+  color: white;
+  background: var(--orange-dark);
+}
+
+.button span {
+  margin-right: 3px;
+}

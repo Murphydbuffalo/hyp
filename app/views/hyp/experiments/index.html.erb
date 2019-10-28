@@ -1,55 +1,59 @@
-<header>
-  <div id="modal">
-    <p id="notice"><%= notice %></p>
-
-    <h1>Experiments</h1>
-
-    <% if @experiments.none? %>
-      <p>
-        You don't have any experiments yet! <%= link_to 'Click here', new_experiment_path %> to get started.
-      </p>
-    <% else %>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Alpha</th>
-            <th>Power</th>
-            <th>Control</th>
-            <th>Minimum detectable effect</th>
-            <th>Sample size</th>
-            <th colspan="3"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @experiments.each do |experiment| %>
-            <tr>
-              <td><%= experiment.name %></td>
-              <td><%= experiment.alpha %></td>
-              <td><%= experiment.power %></td>
-              <td><%= experiment.control.round(4) %></td>
-              <td><%= experiment.minimum_detectable_effect.round(4) %></td>
-              <td><%= experiment.sample_size %></td>
-              <td><%= link_to 'Details', experiment %></td>
-              <% if experiment.started? %>
-                <td>----</td>
-              <% else %>
-                <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
-              <% end %>
-              <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% end %>
-  </div>
-</header>
-
 <nav>
-  <h5>
-    <a href=<%= new_experiment_path %>>
-      New Experiment
-    </a>
-  </h5>
+  <%= image_tag "hyp/hyp-logo.svg", class: "logo" %>
+
+  <a class="button" href=<%= new_experiment_path %>>
+    &#43; Create New
+  </a>
+
+  <div class="nav-bottom">
+    <a href="https://github.com/Murphydbuffalo/hyp" target="_blank">Check out on Github ↗️</a>
+  </div>
+
 </nav>
+
+<div class="wrapper">
+  <p id="notice"><%= notice %></p>
+
+  <h1>Experiments</h1>
+
+  <% if @experiments.none? %>
+    <p>
+      You don't have any experiments yet! <%= link_to 'Click here', new_experiment_path %> to get started.
+    </p>
+  <% else %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Alpha</th>
+          <th>Power</th>
+          <th>Control</th>
+          <th>Minimum detectable effect</th>
+          <th>Sample size</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @experiments.each do |experiment| %>
+          <tr>
+            <td class="name"><%= link_to experiment.name, experiment %></td>
+            <td><%= experiment.alpha %></td>
+            <td><%= experiment.power %></td>
+            <td><%= experiment.control.round(4) %></td>
+            <td><%= experiment.minimum_detectable_effect.round(4) %></td>
+            <td><%= experiment.sample_size %></td>
+            <td><%= link_to 'Details', experiment %></td>
+            <% if experiment.started? %>
+              <td>----</td>
+            <% else %>
+              <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+            <% end %>
+            <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+</div>
