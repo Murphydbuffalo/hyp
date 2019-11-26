@@ -47,7 +47,7 @@
     <% end %>
 
     <%= form.range_field :minimum_detectable_effect, within: 0.01..0.20, step: 0.01 %>
-  
+
     <div class="mde-display">
       <%= experiment.minimum_detectable_effect&.round(2) || 0.1 %>
     </div>

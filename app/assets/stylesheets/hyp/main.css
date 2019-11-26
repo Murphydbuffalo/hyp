@@ -84,12 +84,8 @@ nav h5 {
   margin-bottom: 0;
 }
 
-#modal form div {
-  display: inline-block;
-  margin-right: 0.5em;
-}
-
 #modal form .field {
+  display: inline-block;
   margin-right: 0.75em;
 }
 
@@ -102,6 +98,10 @@ nav h5 {
   background-color: #0a4773;
   color: white;
   font-size: 0.9em;
+}
+
+#modal form input[type="range"] {
+  margin: 0;
 }
 
 .sample-size-preview {
