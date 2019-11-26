@@ -1,11 +1,7 @@
-<%# Slider for MDE  %>
-<%# Update sample size on keyup %>
-<%# Explicitly say "You'll have a `POWER`% chance of detecting effects of size `MDE`." %>
-<%# Tooltip after the tex explaining the MDE/Power relationship %>
 <%= form_with(model: experiment, local: true) do |form| %>
   <% if experiment.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
+      <h2><%= pluralize(experiment.errors.count, "error") %> prevented this experiment from being saved:</h2>
 
       <ul>
       <% experiment.errors.full_messages.each do |message| %>
@@ -21,23 +17,40 @@
   </div>
 
   <div class="field alpha">
-    <%= form.label :alpha %>
+    <%= form.label :alpha do %>
+      Alpha
+      <i class="fas fa-question-circle" title="Also known as the significance level. This is the chance of a false positive, detecting a significant result when one is not actually present."></i>
+    <% end %>
     <%= form.select :alpha, [0.05, 0.01] %>
   </div>
 
   <div class="field power">
-    <%= form.label :power %>
+    <%= form.label :power do %>
+      Power
+      <i class="fas fa-question-circle" title="The probability of detecting a significant result if one is present. Higher power means lower chance of false negatives."></i>
+    <% end %>
     <%= form.select :power, [0.80, 0.90] %>
   </div>
 
   <div class="field control">
-    <%= form.label :control, 'Control conversion rate' %>
+    <%= form.label :control do %>
+      Control conversion rate
+      <i class="fas fa-question-circle" title="To calculate your sample size accurately we need to know the conversion rate of the existing version of this feature. A very high or low conversion rate means there is less variability in the distribution, and therefore a smaller sample size would be required."></i>
+    <% end %>
     <%= form.text_field :control %>
   </div>
 
   <div class="field minimum_detectable_effect">
-    <%= form.label :minimum_detectable_effect %>
-    <%= form.text_field :minimum_detectable_effect %>
+    <%= form.label :minimum_detectable_effect do %>
+      Minimum detectable effect
+      <i class="fas fa-question-circle" title="An experiment's effect size is the difference between the control and treatment conversion rates. Bigger effect sizes are easier to detect as statistically significant. You'll need an effect size at least as big as your MDE to guarantee your chosen level of power."></i>
+    <% end %>
+
+    <%= form.range_field :minimum_detectable_effect, within: 0.01..0.20, step: 0.01 %>
+  
+    <div class="mde-display">
+      <%= experiment.minimum_detectable_effect&.round(2) || 0.1 %>
+    </div>
   </div>
 
   <div class="actions">
@@ -47,17 +60,9 @@
 
 <section class='sample-size-preview'>
   <p>
-    <% sample_size = @experiment.persisted? ? @experiment.sample_size : 'N/A' %>
+    <% sample_size = @experiment.persisted? ? @experiment.sample_size : 'Please fill out all fields.' %>
     <strong>Required sample size per variant:</strong> <span class='sample-size'><%= number_with_delimiter(sample_size) %></span>
-  </p>
-
-  <p>
-    <em>
-      To see your required sample size select levels of alpha and power, specify
-      the smallest effect size you care to detect (which we'll use as the
-       "minimum detectable effect"), and the conversion rate of the current version
-      of the feature (the "control").
-    </em>
+    <i class="sample-size-tooltip fas fa-question-circle"></i>
   </p>
 
   <p>
@@ -71,15 +76,29 @@
 
 <script type='text/javascript'>
   $(document).ready(function(_event) {
-    $('input, select').change(function(_event) {
+    var alpha, power, control, minimum_detectable_effect;
+
+    alpha                     = parseFloat($('.alpha select').val()) * 100.0;
+    power                     = parseFloat($('.power select').val()) * 100.0;
+    control                   = parseFloat($('.control input').val()) * 100.0;
+    minimum_detectable_effect = parseFloat($('.minimum_detectable_effect input').val()) * 100.0;
+
+    $('.sample-size-tooltip').attr("title", "This sample size guarantees you a " + power + "% chance of finding a significant result if it is present given an effect size of at least " + minimum_detectable_effect + "%, alpha of " + alpha  + "%, and your baseline conversion rate of " + control + "%.");
+
+    var mdeSlider = $('#experiment_minimum_detectable_effect');
+    mdeSlider.on('input', function(_event) {
+      $('.mde-display').text(mdeSlider.val());
+    });
+
+    var handleInputChange = function(_event) {
       var alpha, power, control, minimum_detectable_effect;
 
-      alpha                     = $('.alpha select').val();
-      power                     = $('.power select').val();
-      control                   = $('.control input').val();
-      minimum_detectable_effect = $('.minimum_detectable_effect input').val();
+      alpha                     = parseFloat($('.alpha select').val());
+      power                     = parseFloat($('.power select').val());
+      control                   = parseFloat($('.control input').val());
+      minimum_detectable_effect = parseFloat($('.minimum_detectable_effect input').val());
 
-      if (alpha.length && power.length && control.length && minimum_detectable_effect.length) {
+      if (alpha > 0 && power > 0 && control > 0 && minimum_detectable_effect > 0) {
         $.get(
           '/hyp/sample_size',
           {
@@ -88,11 +107,15 @@
             control:                   parseFloat(control),
             minimum_detectable_effect: parseFloat(minimum_detectable_effect)
           },
-          function(data, status, _xhr) {
+          function(data, _status, _xhr) {
             $('.sample-size').text(data.result);
           }
         );
       }
-    });
+    };
+
+    $('#experiment_minimum_detectable_effect').on('input', handleInputChange);
+    $('#experiment_control').keyup(handleInputChange);
+    $('input, select').change(handleInputChange);
   });
 </script>

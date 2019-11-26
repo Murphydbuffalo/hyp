@@ -80,14 +80,27 @@ nav h5 {
   display: inline-block;
 }
 
+#modal form {
+  margin-bottom: 0;
+}
+
 #modal form div {
   display: inline-block;
   margin-right: 0.5em;
 }
 
+#modal form .field {
+  margin-right: 0.75em;
+}
+
+#modal form .actions {
+  display: block;
+  margin-top: 1em;
+}
+
 #modal form .actions input {
-  background-color: lightgray;
-  color: black;
+  background-color: #0a4773;
+  color: white;
   font-size: 0.9em;
 }
 
