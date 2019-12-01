@@ -11,6 +11,7 @@ module Hyp
             validates :minimum_detectable_effect, numericality:
               { less_than_or_equal_to: 1.0, greater_than_or_equal_to: 0.0 }
             validates_uniqueness_of :name
+            validates_presence_of :name
           RUBY
         )
       end
