@@ -87,7 +87,7 @@
 
     $('.sample-size-tooltip').attr("title", "This sample size guarantees you a " + power + "% chance of finding a significant result if it is present given an effect size of at least " + minimum_detectable_effect + "%, alpha of " + alpha  + "%, and your baseline conversion rate of " + control + "%.");
 
-    var mdeSlider = $('#experiment_minimum_detectable_effect');
+    var mdeSlider = $('.minimum_detectable_effect input');
     mdeSlider.on('input', function(_event) {
       $('.mde-display').text(mdeSlider.val());
     });
@@ -116,8 +116,8 @@
       }
     };
 
-    $('#experiment_minimum_detectable_effect').on('input', handleInputChange);
-    $('#experiment_control').keyup(handleInputChange);
+    $('.minimum_detectable_effect input').on('input', handleInputChange);
+    $('.control input').keyup(handleInputChange);
     $('input, select').change(handleInputChange);
   });
 </script>
