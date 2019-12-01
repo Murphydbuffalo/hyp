@@ -85,13 +85,12 @@ nav h5 {
 }
 
 #modal form .field {
-  display: inline-block;
-  margin-right: 0.75em;
+  margin-right: 2em;
 }
 
 #modal form .actions {
   display: block;
-  margin-top: 1em;
+  margin-top: 2em;
 }
 
 #modal form .actions input {
@@ -107,4 +106,9 @@ nav h5 {
 .sample-size-preview {
   width: 50%;
   margin: 0 auto;
+}
+
+.field-container {
+  display: flex;
+  justify-content: center;
 }
