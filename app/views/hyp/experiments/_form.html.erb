@@ -62,7 +62,7 @@
 
 <section class='sample-size-preview'>
   <p>
-    <% sample_size = @experiment.persisted? ? @experiment.sample_size : 'Please fill out all fields.' %>
+    <% sample_size = @experiment.persisted? ? @experiment.sample_size : 'N/A' %>
     <strong>Required sample size per variant:</strong> <span class='sample-size'><%= number_with_delimiter(sample_size) %></span>
     <i class="sample-size-tooltip fas fa-question-circle"></i>
   </p>
