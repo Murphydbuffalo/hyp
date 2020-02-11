@@ -76,59 +76,15 @@
   </p>
 </section>
 
-<script type='text/javascript'>
-  function updateSampleSizeTooltip() {
-    var alpha, power, control, minimum_detectable_effect, message;
+<script type="text/javascript">
+  document.onready = function(_event) {
+    const sampleSize = new SampleSize();
+    sampleSize.updateTooltipDescription();
+    sampleSize.listen();
 
-    alpha                     = parseFloat($('.alpha select').val()) * 100.0;
-    power                     = parseFloat($('.power select').val()) * 100.0;
-    control                   = +(parseFloat($('.control input').val()) * 100.0).toFixed(2);
-    minimum_detectable_effect = +parseFloat($('.minimum_detectable_effect input').val()) * 100.0;
-
-    if (alpha > 0 && power > 0 && control > 0 && minimum_detectable_effect > 0) {
-      message = "This sample size guarantees you a " + power + "% chance of finding a significant result if it is present given an effect size of at least " + minimum_detectable_effect + "%, alpha of " + alpha  + "%, and your baseline conversion rate of " + control + "%.";
-    } else {
-      message = "Please fill out all fields to see your required sample size.";
-    }
-
-    $('.sample-size-tooltip').attr("title", message);
-  }
-
-  $(document).ready(function(_event) {
-    updateSampleSizeTooltip();
-
-    var mdeSlider = $('.minimum_detectable_effect input');
-    mdeSlider.on('input', function(_event) {
-      $('.mde-display').text(mdeSlider.val());
-    });
-
-    var handleInputChange = function(_event) {
-      var alpha, power, control, minimum_detectable_effect;
-
-      alpha                     = parseFloat($('.alpha select').val());
-      power                     = parseFloat($('.power select').val());
-      control                   = parseFloat($('.control input').val());
-      minimum_detectable_effect = parseFloat($('.minimum_detectable_effect input').val());
-
-      if (alpha > 0 && power > 0 && control > 0 && minimum_detectable_effect > 0) {
-        $.get(
-          '/hyp/sample_size',
-          {
-            alpha:                     parseFloat(alpha),
-            power:                     parseFloat(power),
-            control:                   parseFloat(control),
-            minimum_detectable_effect: parseFloat(minimum_detectable_effect)
-          },
-          function(data, _status, _xhr) {
-            $('.sample-size').text(data.result);
-            updateSampleSizeTooltip();
-          }
-        );
-      }
-    };
-
-    $('.minimum_detectable_effect input').on('input', handleInputChange);
-    $('.control input').keyup(handleInputChange);
-    $('input, select').change(handleInputChange);
-  });
+    new DynamicSlider(
+      '.minimum_detectable_effect input',
+      '.minimum_detectable_effect .mde-display'
+    ).start();
+  };
 </script>
