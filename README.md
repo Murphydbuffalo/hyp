@@ -50,7 +50,8 @@ experiment.record_trial(user)
 experiment.record_conversion(user)
 ```
 
-Calling `#record_conversion` will create a trial for that user if one doesn't already exist. There is a unique database constraint limiting users to a single
+Calling `#record_conversion` will create a trial for that user if one doesn't
+already exist. There is a unique database constraint limiting users to a single
 trial per experiment.
 
 ### Shorthand Syntax
@@ -101,12 +102,17 @@ $.ajax({
 ```
 
 ### Working with emails
-In order to record trials or conversions in emails you can use the `Hyp::QueryParam` class to add special query params to the links or buttons in
-your emails. These query params are Base64 encoded strings that contain the IDs of a given experiment and user, as well as an `event_type` string specifying whether Hyp should record a `'trial'` or a `'conversion'` when the URL is visited.
+In order to record trials or conversions in emails you can use the `Hyp::QueryParam`
+class to add special query params to the links or buttons in your emails.
+These query params are Base64 encoded strings that contain the IDs of a given
+experiment and user, as well as an `event_type` string specifying whether Hyp
+should record a `'trial'` or a `'conversion'` when the URL is visited.
 
-Call `Hyp::Experiment#conversion_query_param(user)` or `Hyp::Experiment#trial_query_param(user)` to generate the Base64 encoded string.
+Call `Hyp::Experiment#conversion_query_param(user)` or
+`Hyp::Experiment#trial_query_param(user)` to generate the Base64 encoded string.
 
-Simply add one of these strings to your URL in a query param called `:hyp`, and then in the corresponding controller call `Hyp::QueryParam.record_event_for(params[:hyp])`.
+Simply add one of these strings to your URL in a query param called `:hyp`, and
+then in the corresponding controller call `Hyp::QueryParam.record_event_for(params[:hyp])`.
 
 Eg in your email view:
 ```ruby
@@ -159,7 +165,8 @@ This will:
 
 `hyp:install` takes two optional flags: `--db-interface`, and `--user-class`.
 
-`--db-interface` tells Hyp which ORM/ODM your application uses. It can be either `active_record` or `mongoid`. It defaults to `active_record`.
+`--db-interface` tells Hyp which ORM/ODM your application uses. It can be either
+`active_record` or `mongoid`. It defaults to `active_record`.
 
 If you add `--db-interface mongoid` the generator will:
 + Add `Hyp.db_interface = :mongoid` to `config/initializers/hyp.rb`.
@@ -167,16 +174,21 @@ If you add `--db-interface mongoid` the generator will:
 + Create models that know how to talk to Mongoid. Hooray!
 
 In Hyp we associate each trial with a particular user using a "has and belongs
-to many" relationships between the user and experiment. The `--user-class` option tells Hyp what class you'd like to use as the "user" in your experiments.
-It can be any string that can be `#constantize`'d to a valid class from your application code. It defaults to `'User'` if not present.
+to many" relationships between the user and experiment. The `--user-class` option
+tells Hyp what class you'd like to use as the "user" in your experiments.
+
+It can be any string that can be `#constantize`'d to a valid class from your
+application code. It defaults to `'User'` if not present.
 
 If you add `--user-class MyClass` the generator will add
 `Hyp.user_class_name = 'MyClass'` to `config/initializers/hyp.rb`.
 
 ## Get notified upon completion of an experiment
-Hyp provides the `Hyp::ExperimentMailer#notify_experiment_done` method to send an email summarizing the results of an experiment.
+Hyp provides the `Hyp::ExperimentMailer#notify_experiment_done` method to send
+an email summarizing the results of an experiment.
 
-Hyp also lets you run arbitrary code upon completion of an experiment via the `Hyp.experiment_complete_callback` attribute.
+Hyp also lets you run arbitrary code upon completion of an experiment via the
+`Hyp.experiment_complete_callback` attribute.
 
 To set this up open `config/initializers/hyp.rb` and set
 `Hyp.experiment_complete_callback` to an object that responds to `#call`, such
@@ -184,16 +196,23 @@ as a lambda. Hyp will pass the ID of the `Hyp::Experiment` when it invokes `#cal
 
 For example:
 ```ruby
+# /config/initializers/hyp.rb
+
 Hyp.experiment_complete_callback = ->(experiment_id) {
   Hyp::ExperimentMailer.notify_experiment_done(experiment_id, 'dev@example.com')
                        .deliver_later
 }
 ```
 
-In the above example we're using `#experiment_complete_callback` to send email via the `Hyp::ExperimentMailer`, but you can run whatever code you like here. `#notify_experiment_done` takes the ID of an experiment and a string representing the email address that should receive the email.
+In the above example we're using `#experiment_complete_callback` to send email
+via the `Hyp::ExperimentMailer`, but you can run whatever code you like here.
+`#notify_experiment_done` takes the ID of an experiment and a string
+representing the email address that should receive the email.
 
 ## Authorization
-Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and staging environments. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD` environment variables, which will be the credentials required to log in.
+Hyp runs HTTP Basic Auth on the `ExperimentsController` in the production and
+staging environments. Be sure to set the `HYP_USERNAME` and `HYP_PASSWORD`
+environment variables, which will be the credentials required to log in.
 
 ## Methodology
 Hyp runs two-tailed hypothesis tests for the difference of two sample
@@ -222,9 +241,10 @@ hypothesis is true.
 If this p-value is is lower than the experiment's level of alpha we have a
 statistically significant result.
 
+### How to interpret experiment results
 It is up to you to interpret the the results of the hypothesis test. A higher
 treatment conversion rate may be good, signifying a greater percentage of users
-who visited a page clicked on the sign up button. It may also be bad, perhaps
+who visited a page and clicked on the sign up button. It may also be bad, perhaps
 signifying that a greater percentage of existing customers clicked the button to
 cancel their account.
 
@@ -232,22 +252,30 @@ An experiment might tell you that while the results are significant, it is the
 *control* variant that performs better, and therefore that you should not
 replace it with the treatment.
 
-Perhaps no significant result will be detected: keep in mind that you only have
-a percentage chance of detecting positive results equal to your chosen level of
-statistical power.
+Perhaps no significant result will be detected. Keep in mind that you only have
+a percentage chance of detecting positive results (if they exist) equal to your
+chosen level of statistical power.
 
 You might decide to replace the existing variant of the feature even if there is
 no statistically significant difference between the two variants simply because
-you prefer the code or esthetic quality of one variant. The Signal v. Noise blog
+you prefer the code or aesthetic quality of one variant. The Signal v. Noise blog
 has [an excellent post](https://signalvnoise.com/posts/3004-ab-testing-tech-note-determining-sample-size)
  on this topic.
 
 ## Creating experiments and calculating sample sizes
-_Beware! We talk about statistics below. If you'd rather just use Hyp and not get a refresher math course feel free to skip this section. If you want to be confident that Hyp works properly or are simply curious to learn more, please continue :)._
+_Beware! We talk about statistics below. If you'd rather just use Hyp and not
+get a refresher math course feel free to skip this section. If you want to be
+confident that Hyp works properly or are simply curious to learn more, please
+continue :)._
 
-When you create an experiment Hyp will calculate the necessary sample size for your experiment, and if you're not already intimately familiar with statistics this warrants some explanation. Why do we need to know our sample size ahead of time? Can't we just run the experiment until a significant result is found? The answer, sadly, is no.
+When you create an experiment Hyp will calculate the necessary sample size for
+it to satisfy some parameters you have specified. If you're not already
+intimately familiar with A/B testing this warrants some explanation. Why do we
+need to know our sample size ahead of time? Can't we just run the experiment
+until a significant result is found? The answer, sadly, is no.
 
-Check out Evan Miller's excellent blog post [How not to run an A/B test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) to get a sense of why this is.
+Check out Evan Miller's excellent blog post [How not to run an A/B test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html)
+to get a sense of why this is.
 
 In short, if you run your test until you find a significant result you're gaming
 the system and tricking yourself into thinking your results are statistically
@@ -255,23 +283,29 @@ valid when they may not be. Specifically, you could find a significant result
 after 500 trials and stop the experiment, not realizing that after 1000 trials
 the result would not have been significant.
 
-On the other hand, you can also run your experiment for too long and get *too large of a sample size*. The larger your sample the smaller its standard deviation will be, and we determine statistical significance by measuring how many standard deviations from the mean a result is. Therefore, with a large enough sample size *any* result will be found statistically significant by virtue of the standard deviation being very small. This can mean running an experiment only to find a significant result that you don't care about, maybe a 0.00001% increase in some
-metric.
+On the other hand, you can also run your experiment for too long and get *too
+large of a sample size*. The larger your sample the smaller its standard
+deviation will be, and we determine statistical significance by measuring how
+many standard deviations from the mean a result is. Therefore, with a large
+enough sample size *any* result will be found statistically significant by
+virtue of the standard deviation being very small. This can mean running an
+experiment only to find a significant result that you don't care about, maybe a
+0.00001% increase in some metric.
 
-What we want is the smallest sample size that will effectively find us significant
-results that we actually care about.
+What we want is the smallest sample size that will effectively find us
+significant results that we actually care about.
 
 "Effectively" means balancing the likelihood of false positives and false negatives
 in our experiments. There is always some chance of each. As we'll discuss below
-we can choose different levels of `alpha` and `power` to set the probabilities of
-false positives and negatives, and these parameters are part of what dictates
+we can choose different levels of `alpha` and `power` to set the probabilities
+of false positives and negatives, and these parameters are part of what dictates
 the sample size we'll need.
 
 The sample size calculation also requires data about the existing control variant
 and something called the minimum detectable effect.
 
-So what are all of these things and why do you need to provide them in order to
-calculate the sample size?
+So what are all of these parameters and why do you need to provide them in order
+to calculate the sample size?
 
 ### Alpha
 Also known as the significance level, alpha is the threshold at which we deem a
@@ -308,7 +342,7 @@ the minimum detectable effect, or MDE.
 
 ### Minimum detectable effect (MDE)
 The smallest effect size you would care to detect. We don't want to run an
-experiment only to find out that our result, although statistically significant,
+experiment only to find out that the result, although statistically significant,
 is not large enough to deliver business value.
 
 *The level of power we calculate is for an effect size at least as large as your
@@ -316,11 +350,17 @@ MDE.* So if 1% is the smallest effect size that matters to your business for a
 given experiment, and your power level is 80%, your experiment will have an 80%
 chance of detecting a significant 1% effect.
 
-If you have a 2% effect size your power will be even higher than the level you
-specified for your MDE of 1%.
+If your experiment achieves a bigger effect size than your chosen MDE then your
+power will be even higher than the level you chose. The opposite is also true,
+if your experiment's effect size is smaller than the specified MDE you will
+have lower power.
+
+Hyp treats MDE as an *absolute* percentage. So if the control variant converts
+10% of the time and your MDE is 5%, then the treatment variant needs to convert
+at least 15% of time to satisfy the MDE.
 
 ### Control conversion rate
-You must have existing data for or a reasonable estimate of the conversion rate
+You must have existing data for, or a reasonable estimate of, the conversion rate
 of the current variant of the feature. If you don't have data on an existing
 version of the feature - maybe you haven't released it yet - go and gather some
 data before running experiments on it.
@@ -355,7 +395,7 @@ a lower risk of false negatives.
 I like to think of it as having various levers to pull and tradeoffs to make. If
 you want lower alpha and higher power, you'll need a higher sample size. If you
 want to be able to detect very small effects, you'll need a higher sample size.
-If there is a ton of variability in the experiment's probability distribution
+If there is a ton of variability in the control variant's probability distribution
 you'll need a higher sample size.
 
 But conversely, if you only care about very large effect sizes, or if you don't
@@ -364,6 +404,25 @@ a smaller sample size.
 
 For a more in-depth discussion of these concepts check out my blog post on the
 subject: [Why do I need such a large sample size for my A/B test?](https://murphydbuffalo.tumblr.com/post/185500662003/why-do-i-need-such-a-large-sample-size-for-my-ab)
+
+## When not to run an experiment
+It's worth mentioning that there may be parts of your application that you'd
+like to test, but probably shouldn't. Typically this happens when the thing you
+want to test:
+1. Is important for your application
+2. Does not get enough usage to satisfy the required sample size of the
+experiment in a reasonable amount of time.
+
+The combination of those things means that you could be running an experimental
+variant for many weeks that provides a substantially worse result than the
+control.
+
+For example, if you want to test the copy on an email that doesn't get sent out
+very often, but which is critical for users to take some action in when it is
+sent you may not want to A/B test it. Of course, this is a judgment call. If
+you are very confident that the experimental variant you want to try out will
+not perform much worse than the control, then you maybe comfortable running the
+experiment for a long time.
 
 ## Documentation
 ### `Hyp::ExperimentRepo`
